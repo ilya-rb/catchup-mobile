@@ -14,8 +14,9 @@ import com.illiarb.catchup.uikit.core.model.Identifiable
 public fun <T> HorizontalList(
   modifier: Modifier = Modifier,
   items: List<T>,
+  keyProvider: (Int, T) -> Any,
   itemContent: @Composable LazyItemScope.(Int, T) -> Unit,
-) where T : Identifiable<String> {
+) {
   LazyRow(
     modifier = modifier,
     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -23,7 +24,7 @@ public fun <T> HorizontalList(
   ) {
     itemsIndexed(
       items = items,
-      key = { _, model -> model.id },
+      key = keyProvider,
       itemContent = itemContent,
     )
   }

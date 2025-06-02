@@ -22,8 +22,9 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -35,14 +36,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.illiarb.catchup.core.data.Async
 import com.illiarb.catchup.features.home.HomeScreen.Event
-import com.illiarb.catchup.features.home.filters.FiltersContract
-import com.illiarb.catchup.features.home.filters.showFiltersOverlay
+import com.illiarb.catchup.features.home.overlay.TagFilterContract
+import com.illiarb.catchup.features.home.overlay.showTagFilterOverlay
 import com.illiarb.catchup.service.domain.Article
 import com.illiarb.catchup.service.domain.NewsSource
 import com.illiarb.catchup.summarizer.ui.SummaryScreen
@@ -98,8 +100,11 @@ public class HomeScreenFactory : Ui.Factory {
 private fun HomeScreen(state: HomeScreen.State) {
   ContentWithOverlays {
     val eventSink = state.eventSink
+
     val bottomSheetContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
     val bottomBarBehavior = BottomAppBarDefaults.exitAlwaysScrollBehavior()
+    val bottomBarAlpha = 1 - bottomBarBehavior.state.collapsedFraction
+
     val topBarBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     val hazeState = remember { HazeState() }
@@ -108,19 +113,22 @@ private fun HomeScreen(state: HomeScreen.State) {
     when {
       state.filtersShowing -> {
         OverlayEffect(Unit) {
-          val result = showFiltersOverlay(
-            model = FiltersContract.Model(state.articlesTags, state.articlesFilter),
-            containerColor = bottomSheetContainerColor,
+          val result = showTagFilterOverlay(
+            TagFilterContract.Input(
+              allTags = state.articlesTags,
+              selectedTags = state.selectedTags,
+              containerColor = bottomSheetContainerColor,
+            ),
           )
-          eventSink.invoke(Event.FiltersResult(result))
+          eventSink.invoke(Event.TagFilterResult(result))
         }
       }
 
-      state.articleToShowSummary != null -> {
+      state.articleSummaryToShow != null -> {
         OverlayEffect(Unit) {
           val result = showSummaryOverlay(
             SummaryScreen(
-              state.articleToShowSummary.id,
+              state.articleSummaryToShow.id,
               context = SummaryScreen.Context.HOME,
             ),
           )
@@ -161,21 +169,23 @@ private fun HomeScreen(state: HomeScreen.State) {
           containerColor = Color.Transparent,
           actions = {
             AnimatedContent(
-              targetState = state.tabs,
+              targetState = state.newsSources,
               transitionSpec = { fadeIn().togetherWith(fadeOut()) },
               contentKey = { it is Async.Content },
             ) { targetState ->
               when (targetState) {
                 is Async.Loading -> {
-                  TabsLoading(Modifier.padding(start = 16.dp))
+                  NewsSourcesLoading(Modifier.padding(start = 16.dp))
                 }
 
                 is Async.Content -> {
-                  TabsContent(
-                    modifier = Modifier.padding(start = 16.dp),
-                    tabs = targetState.content,
-                    selectedTabIndex = state.selectedTabIndex,
-                    onTabClick = { eventSink.invoke(Event.TabClicked(it)) }
+                  NewsSourcesContent(
+                    newsSources = targetState.content,
+                    selectedTabIndex = state.selectedNewsSourceIndex,
+                    onTabClick = { eventSink.invoke(Event.TabClicked(it)) },
+                    modifier = Modifier
+                      .padding(start = 16.dp)
+                      .alpha(bottomBarAlpha)
                   )
                 }
 
@@ -184,7 +194,10 @@ private fun HomeScreen(state: HomeScreen.State) {
             }
           },
           floatingActionButton = {
-            FloatingActionButton(onClick = { eventSink.invoke(Event.FiltersClicked) }) {
+            IconButton(
+              modifier = Modifier.alpha(bottomBarAlpha),
+              onClick = { eventSink.invoke(Event.FiltersClicked) }
+            ) {
               Icon(
                 imageVector = Icons.Filled.FilterList,
                 contentDescription = stringResource(Res.string.acsb_action_filter),
@@ -196,11 +209,11 @@ private fun HomeScreen(state: HomeScreen.State) {
     ) { innerPadding ->
       AnimatedContent(
         contentKey = { it is Async.Content },
-        targetState = state.content,
+        targetState = state.articles,
         transitionSpec = { fadeIn().togetherWith(fadeOut()) },
       ) { targetState ->
         when {
-          targetState is Async.Error || state.tabs is Async.Error -> {
+          targetState is Async.Error || state.newsSources is Async.Error -> {
             FullscreenErrorState(Modifier.padding(innerPadding), ErrorStateKind.UNKNOWN) {
               eventSink.invoke(Event.ErrorRetryClicked)
             }
@@ -231,7 +244,7 @@ private fun HomeScreen(state: HomeScreen.State) {
 }
 
 @Composable
-private fun TabsLoading(modifier: Modifier = Modifier) {
+private fun NewsSourcesLoading(modifier: Modifier = Modifier) {
   LazyRow(
     modifier = modifier,
     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -247,21 +260,22 @@ private fun TabsLoading(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun TabsContent(
+private fun NewsSourcesContent(
   modifier: Modifier = Modifier,
-  tabs: ImmutableList<HomeScreen.Tab>,
+  newsSources: ImmutableList<NewsSource>,
   selectedTabIndex: Int,
   onTabClick: (NewsSource) -> Unit,
 ) {
   HorizontalList(
     modifier = modifier,
-    items = tabs,
-    itemContent = { index, tab ->
+    items = newsSources,
+    keyProvider = { _, source -> source.kind.key },
+    itemContent = { index, source ->
       SelectableCircleAvatar(
-        imageUrl = tab.imageUrl,
+        imageUrl = source.imageUrl.url,
         selected = index == selectedTabIndex,
-        fallbackText = tab.source.kind.key.uppercase(),
-        onClick = { onTabClick.invoke(tab.source) }
+        fallbackText = source.kind.key.uppercase(),
+        onClick = { onTabClick.invoke(source) }
       )
     },
   )
@@ -333,10 +347,9 @@ private fun ArticlesContent(
           onSummarizeClick = {
             eventSink.invoke(Event.ArticleSummarizeClicked(article))
           },
-          modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainer),
+        )
+        HorizontalDivider(
+          color = DividerDefaults.color.copy(alpha = 0.5f)
         )
       }
     )

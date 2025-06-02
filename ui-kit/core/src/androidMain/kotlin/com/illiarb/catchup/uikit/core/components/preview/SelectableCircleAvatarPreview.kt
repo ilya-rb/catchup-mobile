@@ -5,7 +5,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.illiarb.catchup.uikit.core.components.SelectableCircleAvatarLoading
 
 @Composable
-@Preview(showBackground = true)
-internal fun SelectableCircleAvatarPreview() {
-  SelectableCircleAvatarLoading(selected = true)
+@Preview
+internal fun SelectableCircleAvatarPreviewLight() {
+  PreviewTheme(darkMode = false) {
+    SelectableCircleAvatarLoading(selected = false)
+  }
+}
+
+@Composable
+@Preview
+internal fun SelectableCircleAvatarPreviewDark() {
+  PreviewTheme(darkMode = true) {
+    SelectableCircleAvatarLoading(selected = true)
+  }
 }

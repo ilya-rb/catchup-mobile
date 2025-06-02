@@ -1,10 +1,11 @@
 package com.illiarb.catchup.uikit.core.components.cell
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -46,45 +47,55 @@ public fun ArticleCell(
 ) {
   var moreMenuExpanded by remember { mutableStateOf(false) }
 
-  Column(modifier = modifier.clickable { onClick.invoke() }) {
-    val hasCaption = caption.isNotEmpty()
-    val paddingTop = 12.dp
+  Row(
+    verticalAlignment = Alignment.CenterVertically,
+    modifier = modifier.clickable(onClick = onClick),
+  ) {
+    Column(modifier = Modifier.weight(1f)) {
+      val hasCaption = caption.isNotEmpty()
+      val paddingVertical = 12.dp
 
-    if (hasCaption) {
-      Text(
-        text = caption.uppercase(),
-        style = MaterialTheme.typography.bodyLarge,
-        color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.fillMaxWidth().padding(top = paddingTop, start = 16.dp, end = 24.dp),
-      )
-    }
-
-    Text(
-      text = title,
-      style = MaterialTheme.typography.bodyLarge,
-      color = MaterialTheme.colorScheme.onSurface,
-      overflow = TextOverflow.Ellipsis,
-      maxLines = 4,
-      modifier = Modifier.fillMaxWidth().padding(
-        start = 16.dp,
-        end = 16.dp,
-        top = if (hasCaption) 0.dp else paddingTop,
-      ),
-    )
-
-    Row(verticalAlignment = Alignment.CenterVertically) {
-      if (author != null) {
-        // TODO: Support large text correct trim
-        AuthorText(
-          modifier = Modifier.padding(horizontal = 16.dp),
-          author = author,
-          style = MaterialTheme.typography.bodyMedium,
-          color = MaterialTheme.colorScheme.onSurfaceVariant,
+      if (hasCaption) {
+        Text(
+          text = caption.uppercase(),
+          style = MaterialTheme.typography.bodyLarge,
+          color = MaterialTheme.colorScheme.primary,
+          modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = paddingVertical, start = 16.dp, end = 24.dp),
         )
       }
 
-      Spacer(Modifier.weight(1f))
+      Text(
+        text = title,
+        style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.onSurface,
+        overflow = TextOverflow.Ellipsis,
+        maxLines = 4,
+        modifier = Modifier.fillMaxWidth().padding(
+          start = 16.dp,
+          end = 16.dp,
+          top = if (hasCaption) 0.dp else paddingVertical,
+          bottom = if (author == null) paddingVertical else 0.dp,
+        ),
+      )
 
+      Row(verticalAlignment = Alignment.CenterVertically) {
+        if (author != null) {
+          AuthorText(
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = paddingVertical),
+            author = author,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+          )
+        }
+      }
+    }
+
+    Column(
+      verticalArrangement = Arrangement.SpaceAround,
+      modifier = Modifier.fillMaxHeight()
+    ) {
       IconButton(onClick = onBookmarkClick) {
         Icon(
           imageVector = if (saved) {

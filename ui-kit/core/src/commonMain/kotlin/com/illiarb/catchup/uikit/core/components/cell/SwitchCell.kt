@@ -28,7 +28,7 @@ public fun SwitchCell(
 ) {
   RowCellInternal(
     modifier = modifier,
-    title = {
+     title = {
       Text(text = text, style = MaterialTheme.typography.bodyLarge)
     },
     subtitle = {
