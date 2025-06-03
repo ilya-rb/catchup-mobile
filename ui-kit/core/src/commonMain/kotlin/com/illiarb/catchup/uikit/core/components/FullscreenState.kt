@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +19,7 @@ public fun FullscreenState(
   modifier: Modifier = Modifier,
   title: String,
   buttonText: String?,
+  buttonColors: ButtonColors = ButtonDefaults.buttonColors(),
   onButtonClick: () -> Unit,
   image: @Composable (Modifier) -> Unit,
 ) {
@@ -29,7 +32,7 @@ public fun FullscreenState(
 
     Text(
       text = title,
-      modifier = Modifier.padding(top = 20.dp),
+      modifier = Modifier.padding(),
       style = MaterialTheme.typography.titleLarge,
       color = MaterialTheme.colorScheme.onSurface,
       textAlign = TextAlign.Center,
@@ -40,6 +43,7 @@ public fun FullscreenState(
       Button(
         modifier = Modifier.padding(top = 20.dp, bottom = 16.dp),
         onClick = onButtonClick,
+        colors = buttonColors,
       ) {
         Text(text = buttonText)
       }

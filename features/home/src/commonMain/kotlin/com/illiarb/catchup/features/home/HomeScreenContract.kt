@@ -36,10 +36,19 @@ public object HomeScreen : Screen, CommonParcelable {
           articles.content
             .map(Article::tags)
             .flatten()
+            // TODO: To remove this and fix database tags insert
+            .filter { it.value.isNotBlank() }
             .toSet()
         }
 
         else -> emptySet()
+      }
+    }
+
+    fun articlesStateKey(): Any {
+      return when (articles) {
+        is Async.Content -> articles.content.isEmpty()
+        else -> this::class
       }
     }
   }
@@ -48,6 +57,7 @@ public object HomeScreen : Screen, CommonParcelable {
     data class ArticleBookmarkClicked(val item: Article) : Event
     data class ArticleClicked(val item: Article) : Event
     data class ArticleSummarizeClicked(val item: Article) : Event
+    data class ArticleShareClicked(val item: Article) : Event
     data class TagFilterResult(val result: TagFilterContract.Output) : Event
     data class SummaryResult(val result: SummaryScreen.Result) : Event
     data class TabClicked(val source: NewsSource) : Event

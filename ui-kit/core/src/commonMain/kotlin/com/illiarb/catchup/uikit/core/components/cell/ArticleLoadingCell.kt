@@ -1,6 +1,7 @@
 package com.illiarb.catchup.uikit.core.components.cell
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,38 +19,50 @@ import com.valentinilk.shimmer.shimmer
 
 @Composable
 public fun ArticleLoadingCell() {
-  Column(modifier = Modifier.shimmer()) {
+  Row(
+    verticalAlignment = Alignment.CenterVertically,
+    modifier = Modifier.shimmer()
+  ) {
     val shimmerColor = Color.LightGray
     val shimmerCornerRadius = 8.dp
 
-    Box(
-      modifier = Modifier
-        .padding(start = 16.dp, top = 16.dp)
-        .size(width = 100.dp, height = 24.dp)
-        .clip(RoundedCornerShape(shimmerCornerRadius))
-        .background(shimmerColor)
-    )
-    Box(
-      modifier = Modifier
-        .padding(start = 16.dp, end = 16.dp, top = 8.dp)
-        .size(width = 250.dp, height = 24.dp)
-        .clip(RoundedCornerShape(shimmerCornerRadius))
-        .background(shimmerColor)
-    )
-
-    Row(verticalAlignment = Alignment.CenterVertically) {
-      Spacer(Modifier.weight(1f))
+    Column(modifier = Modifier.weight(1f)) {
+      Box(
+        modifier = Modifier
+          .padding(start = 16.dp, top = 16.dp)
+          .size(width = 140.dp, height = 16.dp)
+          .clip(RoundedCornerShape(shimmerCornerRadius))
+          .background(shimmerColor)
+      )
+      Box(
+        modifier = Modifier
+          .padding(start = 16.dp, end = 16.dp, top = 12.dp)
+          .size(width = 200.dp, height = 12.dp)
+          .clip(RoundedCornerShape(shimmerCornerRadius))
+          .background(shimmerColor)
+      )
 
       Box(
+        modifier = Modifier
+          .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 12.dp)
+          .size(width = 80.dp, height = 10.dp)
+          .clip(RoundedCornerShape(shimmerCornerRadius))
+          .background(shimmerColor)
+      )
+    }
+
+    Column(verticalArrangement = Arrangement.SpaceAround) {
+      Box(
         Modifier
-          .padding(end = 16.dp).padding(top = 8.dp)
+          .padding(end = 16.dp)
+          .padding(top = 8.dp)
           .size(24.dp)
           .clip(RoundedCornerShape(shimmerCornerRadius))
           .background(shimmerColor)
       )
       Box(
         Modifier
-          .padding(end = 16.dp).padding(top = 8.dp)
+          .padding(end = 16.dp, top = 16.dp, bottom = 16.dp)
           .size(24.dp)
           .clip(RoundedCornerShape(shimmerCornerRadius))
           .background(shimmerColor)

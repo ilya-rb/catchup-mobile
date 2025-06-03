@@ -6,6 +6,7 @@ import com.illiarb.catchup.service.domain.NewsSource
 import com.illiarb.catchup.service.repository.ArticlesRepository
 import com.illiarb.catchup.service.repository.NewsSourcesRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
 public interface CatchupService {
 
@@ -24,7 +25,11 @@ internal class DefaultCatchupService(
 ) : CatchupService {
 
   override fun collectLatestNewsFrom(kind: NewsSource.Kind): Flow<Async<List<Article>>> {
-    return articlesRepository.articlesFrom(kind)
+    return when (kind) {
+      NewsSource.Kind.HackerNews -> flowOf(Async.Loading)
+      NewsSource.Kind.Dou -> flowOf(Async.Content(emptyList()))
+      else -> articlesRepository.articlesFrom(kind)
+    }
   }
 
   override fun collectAvailableSources(): Flow<Async<Set<NewsSource>>> {

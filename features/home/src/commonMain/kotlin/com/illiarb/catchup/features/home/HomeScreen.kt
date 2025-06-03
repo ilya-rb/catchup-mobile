@@ -1,8 +1,11 @@
 package com.illiarb.catchup.features.home
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,12 +30,14 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -71,11 +76,11 @@ import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuit.runtime.ui.Ui
 import com.slack.circuit.runtime.ui.ui
-import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.HazeMaterials
+import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.collections.immutable.ImmutableList
 import me.tatarka.inject.annotations.Inject
 import org.jetbrains.compose.resources.stringResource
@@ -107,8 +112,10 @@ private fun HomeScreen(state: HomeScreen.State) {
 
     val topBarBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
-    val hazeState = remember { HazeState() }
+    val hazeState = rememberHazeState()
     val hazeStyle = HazeMaterials.thin(MaterialTheme.colorScheme.surface)
+
+    val articleFilterVisible by derivedStateOf { state.articlesTags.isNotEmpty() }
 
     when {
       state.filtersShowing -> {
@@ -194,21 +201,31 @@ private fun HomeScreen(state: HomeScreen.State) {
             }
           },
           floatingActionButton = {
-            IconButton(
-              modifier = Modifier.alpha(bottomBarAlpha),
-              onClick = { eventSink.invoke(Event.FiltersClicked) }
+            AnimatedVisibility(
+              visible = articleFilterVisible,
+              enter = scaleIn(),
+              exit = scaleOut(),
             ) {
-              Icon(
-                imageVector = Icons.Filled.FilterList,
-                contentDescription = stringResource(Res.string.acsb_action_filter),
-              )
+              IconButton(
+                colors = IconButtonDefaults.iconButtonColors().copy(
+                  containerColor = MaterialTheme.colorScheme.primary,
+                  contentColor = MaterialTheme.colorScheme.onPrimary,
+                ),
+                onClick = { eventSink.invoke(Event.FiltersClicked) },
+                modifier = Modifier.alpha(bottomBarAlpha),
+              ) {
+                Icon(
+                  imageVector = Icons.Filled.FilterList,
+                  contentDescription = stringResource(Res.string.acsb_action_filter),
+                )
+              }
             }
           }
         )
       },
     ) { innerPadding ->
       AnimatedContent(
-        contentKey = { it is Async.Content },
+        contentKey = { state.articlesStateKey() },
         targetState = state.articles,
         transitionSpec = { fadeIn().togetherWith(fadeOut()) },
       ) { targetState ->
@@ -288,6 +305,10 @@ private fun ArticlesLoading(modifier: Modifier = Modifier, contentPadding: Paddi
       count = 5,
       itemContent = {
         ArticleLoadingCell()
+
+        HorizontalDivider(
+          color = DividerDefaults.color.copy(alpha = 0.5f)
+        )
       }
     )
   }
@@ -334,6 +355,7 @@ private fun ArticlesContent(
       key = { article -> article.id },
       itemContent = { article ->
         ArticleCell(
+          modifier = Modifier.animateItem(),
           title = article.title,
           author = article.authorName,
           caption = article.tags.firstOrNull()?.value.orEmpty(),
@@ -346,6 +368,9 @@ private fun ArticlesContent(
           },
           onSummarizeClick = {
             eventSink.invoke(Event.ArticleSummarizeClicked(article))
+          },
+          onShareClick = {
+            eventSink.invoke(Event.ArticleShareClicked(article))
           },
         )
         HorizontalDivider(

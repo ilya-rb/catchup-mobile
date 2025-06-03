@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -14,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.illiarb.catchup.uikit.resources.Res
+import com.illiarb.catchup.uikit.resources.common_error_default_action
+import com.illiarb.catchup.uikit.resources.common_error_default_title
 import com.illiarb.catchup.uikit.resources.home_articles_empty_action
 import com.illiarb.catchup.uikit.resources.home_articles_empty_title
 import org.jetbrains.compose.resources.stringResource
@@ -29,8 +32,12 @@ public fun FullscreenErrorState(
     horizontalAlignment = Alignment.CenterHorizontally,
   ) {
     FullscreenState(
-      title = stringResource(Res.string.home_articles_empty_title),
-      buttonText = stringResource(Res.string.home_articles_empty_action),
+      title = stringResource(Res.string.common_error_default_title),
+      buttonText = stringResource(Res.string.common_error_default_action),
+      buttonColors = ButtonDefaults.buttonColors().copy(
+        containerColor = MaterialTheme.colorScheme.error,
+        contentColor = MaterialTheme.colorScheme.onError,
+      ),
       onButtonClick = onRefreshClick,
       modifier = Modifier
         .fillMaxWidth()
@@ -39,7 +46,7 @@ public fun FullscreenErrorState(
         .background(MaterialTheme.colorScheme.surfaceContainer),
     ) {
       LocalLottieAnimation(
-        modifier = Modifier.size(200.dp),
+        modifier = Modifier.size(150.dp),
         animationType = when (errorType) {
           ErrorStateKind.UNKNOWN -> LottieAnimationType.ERROR
         },

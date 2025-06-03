@@ -1,5 +1,6 @@
 package com.illiarb.catchup
 
+import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -14,6 +15,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.getValue
 import coil3.compose.setSingletonImageLoaderFactory
 import com.illiarb.catchup.core.arch.OpenUrlScreen
+import com.illiarb.catchup.core.arch.ShareScreen
 import com.illiarb.catchup.di.AndroidUiComponent
 import com.illiarb.catchup.di.create
 import com.illiarb.catchup.features.home.HomeScreen
@@ -28,6 +30,7 @@ import com.slack.circuit.retained.collectAsRetainedState
 import com.slack.circuitx.android.AndroidScreen
 import com.slack.circuitx.android.rememberAndroidScreenAwareNavigator
 import com.slack.circuitx.gesturenavigation.GestureNavigationDecoration
+import androidx.core.net.toUri
 
 internal class MainActivity : ComponentActivity() {
 
@@ -85,6 +88,7 @@ internal class MainActivity : ComponentActivity() {
   private fun navigateTo(screen: AndroidScreen): Boolean {
     return when (screen) {
       is OpenUrlScreen -> openChromeCustomTab(screen.url)
+      is ShareScreen -> openShareScreen(screen.url)
       else -> false
     }
   }
@@ -97,7 +101,19 @@ internal class MainActivity : ComponentActivity() {
       .setColorSchemeParams(CustomTabsIntent.COLOR_SCHEME_LIGHT, scheme)
       .setShowTitle(true)
       .build()
-      .launchUrl(this, Uri.parse(url))
+      .launchUrl(this, url.toUri())
+
+    return true
+  }
+
+  private fun openShareScreen(url: String): Boolean {
+    val intent = Intent().apply {
+      action = Intent.ACTION_SEND
+      putExtra(Intent.EXTRA_TEXT, url)
+      type = "text/plain"
+    }
+    val chooser = Intent.createChooser(intent, null)
+    startActivity(chooser)
 
     return true
   }

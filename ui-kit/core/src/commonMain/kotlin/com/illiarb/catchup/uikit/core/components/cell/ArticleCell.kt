@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.MoreHoriz
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Summarize
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -30,7 +31,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.illiarb.catchup.uikit.core.text.AuthorText
 import com.illiarb.catchup.uikit.resources.Res
+import com.illiarb.catchup.uikit.resources.acsb_action_share
 import com.illiarb.catchup.uikit.resources.acsb_action_summarize
+import com.illiarb.catchup.uikit.resources.reader_action_share
 import com.illiarb.catchup.uikit.resources.reader_action_summarize
 import org.jetbrains.compose.resources.stringResource
 
@@ -43,6 +46,7 @@ public fun ArticleCell(
   onClick: () -> Unit,
   onBookmarkClick: () -> Unit,
   onSummarizeClick: () -> Unit,
+  onShareClick: () -> Unit,
   author: String? = null,
 ) {
   var moreMenuExpanded by remember { mutableStateOf(false) }
@@ -130,6 +134,19 @@ public fun ArticleCell(
               Icon(
                 imageVector = Icons.Filled.Summarize,
                 contentDescription = stringResource(Res.string.acsb_action_summarize),
+              )
+            }
+          )
+          DropdownMenuItem(
+            text = { Text(text = stringResource(Res.string.reader_action_share)) },
+            onClick = {
+              moreMenuExpanded = false
+              onShareClick()
+            },
+            trailingIcon = {
+              Icon(
+                imageVector = Icons.Filled.Share,
+                contentDescription = stringResource(Res.string.acsb_action_share),
               )
             }
           )

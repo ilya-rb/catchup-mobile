@@ -24,6 +24,7 @@ internal fun ArticleCellPreview(darkTheme: Boolean) {
             onClick = {},
             onBookmarkClick = {},
             onSummarizeClick = {},
+            onShareClick = {},
           )
 
           HorizontalDivider()

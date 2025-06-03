@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
+import com.illiarb.catchup.core.arch.ShareScreen
 import com.illiarb.catchup.core.data.Async
 import com.illiarb.catchup.core.data.mapContent
 import com.illiarb.catchup.features.home.HomeScreen.Event
@@ -65,10 +66,7 @@ internal class HomeScreenPresenter(
       mutableStateOf<Article?>(value = null)
     }
 
-    val newsSources by produceRetainedState<Async<ImmutableList<NewsSource>>>(
-      initialValue = Async.Loading,
-      key1 = catchupService,
-    ) {
+    val newsSources by produceRetainedState<Async<ImmutableList<NewsSource>>>(Async.Loading) {
       catchupService.collectAvailableSources().mapContent { sources ->
         sources.toImmutableList()
       }.collect {
@@ -164,6 +162,10 @@ internal class HomeScreenPresenter(
           contentTriggers = contentTriggers.copy(
             selectedNewsSourceIndex = value.content.indexOf(event.source)
           )
+        }
+
+        is Event.ArticleShareClicked -> {
+          navigator.goTo(ShareScreen(event.item.link.url))
         }
       }
     }
