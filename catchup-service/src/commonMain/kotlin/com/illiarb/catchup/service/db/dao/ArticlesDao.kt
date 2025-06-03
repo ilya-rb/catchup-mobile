@@ -43,9 +43,20 @@ public class ArticlesDao(
           saved = if (article.saved) 1L else 0L,
           id = article.id,
         )
+        Unit
       }
     }.onFailure { error ->
       Logger.e(TAG, error)
+    }
+  }
+
+  public suspend fun savedArticles(): Result<List<Article>> {
+    return withContext(appDispatchers.io) {
+      suspendRunCatching {
+        db.articlesQueries.savedArticles()
+          .executeAsList()
+          .map { entity -> entity.asArticle() }
+      }
     }
   }
 

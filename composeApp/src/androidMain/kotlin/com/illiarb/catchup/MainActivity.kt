@@ -2,7 +2,6 @@ package com.illiarb.catchup
 
 import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
@@ -13,13 +12,13 @@ import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.getValue
+import androidx.core.net.toUri
 import coil3.compose.setSingletonImageLoaderFactory
 import com.illiarb.catchup.core.arch.OpenUrlScreen
 import com.illiarb.catchup.core.arch.ShareScreen
 import com.illiarb.catchup.di.AndroidUiComponent
 import com.illiarb.catchup.di.create
 import com.illiarb.catchup.features.home.HomeScreen
-import com.illiarb.catchup.features.settings.data.SettingsService
 import com.illiarb.catchup.features.settings.data.SettingsService.SettingType
 import com.illiarb.catchup.uikit.core.theme.UiKitTheme
 import com.slack.circuit.backstack.rememberSaveableBackStack
@@ -30,7 +29,6 @@ import com.slack.circuit.retained.collectAsRetainedState
 import com.slack.circuitx.android.AndroidScreen
 import com.slack.circuitx.android.rememberAndroidScreenAwareNavigator
 import com.slack.circuitx.gesturenavigation.GestureNavigationDecoration
-import androidx.core.net.toUri
 
 internal class MainActivity : ComponentActivity() {
 

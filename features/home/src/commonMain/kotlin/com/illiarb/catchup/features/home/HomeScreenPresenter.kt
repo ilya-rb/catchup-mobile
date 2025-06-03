@@ -10,6 +10,8 @@ import com.illiarb.catchup.core.arch.ShareScreen
 import com.illiarb.catchup.core.data.Async
 import com.illiarb.catchup.core.data.mapContent
 import com.illiarb.catchup.features.home.HomeScreen.Event
+import com.illiarb.catchup.features.home.articles.ArticlesUiEvent
+import com.illiarb.catchup.features.home.bookmarks.BookmarksScreen
 import com.illiarb.catchup.features.home.overlay.TagFilterContract
 import com.illiarb.catchup.features.reader.ReaderScreen
 import com.illiarb.catchup.features.settings.SettingsScreen
@@ -108,66 +110,92 @@ internal class HomeScreenPresenter(
       selectedNewsSourceIndex = contentTriggers.selectedNewsSourceIndex,
       filtersShowing = filtersShowing,
       selectedTags = selectedTags.toImmutableSet(),
+      allTags = articles.tags(),
       articleSummaryToShow = articleSummaryToShow,
       articles = articles.filteredBy(selectedTags),
-    ) { event ->
-      when (event) {
-        is Event.SettingsClicked -> navigator.goTo(SettingsScreen)
-        is Event.ErrorRetryClicked -> {
-          contentTriggers = contentTriggers.copy(
-            manualReloadTriggered = !contentTriggers.manualReloadTriggered
-          )
-        }
-
-        is Event.FiltersClicked -> filtersShowing = true
-        is Event.ArticleClicked -> navigator.goTo(ReaderScreen(event.item.id))
-
-        is Event.ArticleBookmarkClicked -> {
-          coroutineScope.launch {
-            catchupService.saveArticle(event.item.copy(saved = !event.item.saved))
-              .onSuccess {
-                contentTriggers = contentTriggers.copy(
-                  articleBookmarked = !contentTriggers.articleBookmarked
-                )
-              }
+      eventSink = { event ->
+        when (event) {
+          is Event.SettingsClicked -> navigator.goTo(SettingsScreen)
+          is Event.ErrorRetryClicked -> {
+            contentTriggers = contentTriggers.copy(
+              manualReloadTriggered = !contentTriggers.manualReloadTriggered
+            )
           }
-        }
 
-        is Event.ArticleSummarizeClicked -> {
-          articleSummaryToShow = event.item
-        }
+          is Event.FiltersClicked -> filtersShowing = true
 
-        is Event.SummaryResult -> {
-          articleSummaryToShow = null
+          is Event.SummaryResult -> {
+            articleSummaryToShow = null
 
-          when (event.result) {
-            is SummaryScreen.Result.Close -> Unit
-            is SummaryScreen.Result.OpenInReader -> {
-              navigator.goTo(ReaderScreen(event.result.articleId))
+            when (event.result) {
+              is SummaryScreen.Result.Close -> Unit
+              is SummaryScreen.Result.OpenInReader -> {
+                navigator.goTo(ReaderScreen(event.result.articleId))
+              }
             }
           }
-        }
 
-        is Event.TagFilterResult -> {
-          if (event.result is TagFilterContract.Output.Saved) {
-            selectedTags = event.result.selectedTags
+          is Event.TagFilterResult -> {
+            if (event.result is TagFilterContract.Output.Saved) {
+              selectedTags = event.result.selectedTags
+            }
+            filtersShowing = false
           }
-          filtersShowing = false
+
+          is Event.TabClicked -> {
+            val value = newsSources
+            require(value is Async.Content<ImmutableList<NewsSource>>)
+
+            contentTriggers = contentTriggers.copy(
+              selectedNewsSourceIndex = value.content.indexOf(event.source)
+            )
+          }
+
+          is Event.BookmarksClicked -> {
+            navigator.goTo(BookmarksScreen)
+          }
         }
+      },
+      articlesEventSink = { event ->
+        when (event) {
+          is ArticlesUiEvent.ArticleClicked -> navigator.goTo(ReaderScreen(event.item.id))
 
-        is Event.TabClicked -> {
-          val value = newsSources
-          require(value is Async.Content<ImmutableList<NewsSource>>)
+          is ArticlesUiEvent.ArticleBookmarkClicked -> {
+            coroutineScope.launch {
+              catchupService.saveArticle(event.item.copy(saved = !event.item.saved))
+                .onSuccess {
+                  contentTriggers = contentTriggers.copy(
+                    articleBookmarked = !contentTriggers.articleBookmarked
+                  )
+                }
+            }
+          }
 
-          contentTriggers = contentTriggers.copy(
-            selectedNewsSourceIndex = value.content.indexOf(event.source)
-          )
-        }
+          is ArticlesUiEvent.ArticleSummarizeClicked -> {
+            articleSummaryToShow = event.item
+          }
 
-        is Event.ArticleShareClicked -> {
-          navigator.goTo(ShareScreen(event.item.link.url))
+          is ArticlesUiEvent.ArticleShareClicked -> {
+            navigator.goTo(ShareScreen(event.item.link.url))
+          }
+
+          is ArticlesUiEvent.ArticlesRefreshClicked -> {
+            contentTriggers = contentTriggers.copy(
+              manualReloadTriggered = !contentTriggers.manualReloadTriggered
+            )
+          }
         }
       }
+    )
+  }
+
+  private fun Async<SnapshotStateList<Article>>.tags(): Set<Tag> {
+    return when (this) {
+      is Async.Content -> content.flatMap(Article::tags)
+        .filter { it.value.isNotEmpty() }
+        .toSet()
+
+      else -> emptySet()
     }
   }
 

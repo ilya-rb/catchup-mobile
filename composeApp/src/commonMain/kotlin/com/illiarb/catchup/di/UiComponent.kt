@@ -2,6 +2,7 @@ package com.illiarb.catchup.di
 
 import com.illiarb.catchup.di.scope.ActivityScope
 import com.illiarb.catchup.features.home.HomeScreenComponent
+import com.illiarb.catchup.features.home.bookmarks.BookmarksScreenComponent
 import com.illiarb.catchup.features.reader.ReaderScreenComponent
 import com.illiarb.catchup.features.settings.di.SettingsScreenComponent
 import com.illiarb.catchup.summarizer.di.SummaryScreenComponent
@@ -14,7 +15,8 @@ internal interface UiComponent :
   HomeScreenComponent,
   ReaderScreenComponent,
   SettingsScreenComponent,
-  SummaryScreenComponent {
+  SummaryScreenComponent,
+  BookmarksScreenComponent {
 
   val circuit: Circuit
 

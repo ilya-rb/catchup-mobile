@@ -16,6 +16,8 @@ public interface CatchupService {
 
   public fun collectArticleById(id: String): Flow<Async<Article>>
 
+  public fun collectSavedArticles(): Flow<Async<List<Article>>>
+
   public suspend fun saveArticle(article: Article): Result<Unit>
 }
 
@@ -38,6 +40,10 @@ internal class DefaultCatchupService(
 
   override fun collectArticleById(id: String): Flow<Async<Article>> {
     return articlesRepository.articleById(id)
+  }
+
+  override fun collectSavedArticles(): Flow<Async<List<Article>>> {
+    return articlesRepository.savedArticles()
   }
 
   override suspend fun saveArticle(article: Article): Result<Unit> {

@@ -53,6 +53,23 @@ public class ArticlesRepository(
     return articlesStore.collect(kind, AsyncDataStore.LoadStrategy.CacheFirst)
   }
 
+  public fun savedArticles(): Flow<Async<List<Article>>> {
+    return flow {
+      articlesDao.savedArticles().fold(
+        onSuccess = {
+          emit(Async.Content(it))
+        },
+        onFailure = { error ->
+          emit(Async.Error(error))
+        }
+      )
+    }.onStart {
+      emit(Async.Loading)
+    }.catch { error ->
+      emit(Async.Error(error))
+    }
+  }
+
   public fun articleById(id: String): Flow<Async<Article>> {
     return flow {
       articlesDao.articleById(id).fold(

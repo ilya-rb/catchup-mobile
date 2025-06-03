@@ -13,6 +13,13 @@ public sealed class Async<out T> {
 
   public data class Error(val error: Throwable) : Async<Nothing>()
 
+  public fun contentOrNull(): T? {
+    return when (this) {
+      is Content -> content
+      else -> null
+    }
+  }
+
   public companion object {
 
     public fun <T> fromFlow(value: suspend () -> T): Flow<Async<T>> {

@@ -28,6 +28,9 @@ SELECT * FROM articleEntity WHERE id = :id LIMIT 1;
 savedArticlesIds:
 SELECT id FROM articleEntity WHERE saved = 1;
 
+savedArticles:
+SELECT * FROM articleEntity WHERE saved = 1;
+
 deleteBySourceExceptSaved:
 DELETE FROM articleEntity WHERE source = :source AND saved = 0;
 
