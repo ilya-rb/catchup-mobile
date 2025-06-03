@@ -1,5 +1,7 @@
 package com.illiarb.catchup.uikit.core.components.cell
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,12 +23,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.illiarb.catchup.uikit.core.text.AuthorText
@@ -36,6 +41,7 @@ import com.illiarb.catchup.uikit.resources.acsb_action_summarize
 import com.illiarb.catchup.uikit.resources.reader_action_share
 import com.illiarb.catchup.uikit.resources.reader_action_summarize
 import org.jetbrains.compose.resources.stringResource
+import kotlinx.coroutines.launch
 
 @Composable
 public fun ArticleCell(
@@ -50,6 +56,9 @@ public fun ArticleCell(
   author: String? = null,
 ) {
   var moreMenuExpanded by remember { mutableStateOf(false) }
+
+  val bookmarkBounce = remember { Animatable(1f) }
+  val coroutineScope = rememberCoroutineScope()
 
   Row(
     verticalAlignment = Alignment.CenterVertically,
@@ -100,7 +109,19 @@ public fun ArticleCell(
       verticalArrangement = Arrangement.SpaceAround,
       modifier = Modifier.fillMaxHeight()
     ) {
-      IconButton(onClick = onBookmarkClick) {
+      IconButton(
+        onClick = {
+          coroutineScope.launch {
+            bookmarkBounce.animateTo(1.2f, animationSpec = tween(100))
+            bookmarkBounce.animateTo(1f, animationSpec = tween(200))
+          }
+          onBookmarkClick()
+        },
+        modifier = Modifier.graphicsLayer(
+          scaleX = bookmarkBounce.value,
+          scaleY = bookmarkBounce.value
+        )
+      ) {
         Icon(
           imageVector = if (saved) {
             Icons.Filled.Bookmark
