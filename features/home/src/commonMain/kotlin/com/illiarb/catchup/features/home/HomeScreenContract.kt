@@ -33,6 +33,7 @@ public object HomeScreen : Screen, CommonParcelable {
     val selectedNewsSourceIndex: Int,
     val filtersShowing: Boolean,
     val articleSummaryToShow: Article?,
+    val bookmarkMessage: BookmarkMessage?,
     val eventSink: (Event) -> Unit,
     val articlesEventSink: (ArticlesUiEvent) -> Unit,
   ) : CircuitUiState {
@@ -45,6 +46,11 @@ public object HomeScreen : Screen, CommonParcelable {
     }
   }
 
+  internal enum class BookmarkMessage {
+    ADDED,
+    REMOVED,
+  }
+
   internal sealed interface Event : CircuitUiEvent {
     data class TagFilterResult(val result: TagFilterContract.Output) : Event
     data class SummaryResult(val result: SummaryScreen.Result) : Event
@@ -53,6 +59,7 @@ public object HomeScreen : Screen, CommonParcelable {
     data object FiltersClicked : Event
     data object SettingsClicked : Event
     data object BookmarksClicked : Event
+    data object BookmarkToastResult : Event
   }
 }
 

@@ -9,6 +9,7 @@ import androidx.compose.runtime.toMutableStateList
 import com.illiarb.catchup.core.arch.ShareScreen
 import com.illiarb.catchup.core.data.Async
 import com.illiarb.catchup.core.data.mapContent
+import com.illiarb.catchup.features.home.HomeScreen.BookmarkMessage
 import com.illiarb.catchup.features.home.HomeScreen.Event
 import com.illiarb.catchup.features.home.articles.ArticlesUiEvent
 import com.illiarb.catchup.features.home.bookmarks.BookmarksScreen
@@ -67,6 +68,9 @@ internal class HomeScreenPresenter(
     var articleSummaryToShow by rememberRetained {
       mutableStateOf<Article?>(value = null)
     }
+    var bookmarkMessage by rememberRetained {
+      mutableStateOf<BookmarkMessage?>(value = null)
+    }
 
     val newsSources by produceRetainedState<Async<ImmutableList<NewsSource>>>(Async.Loading) {
       catchupService.collectAvailableSources().mapContent { sources ->
@@ -113,6 +117,7 @@ internal class HomeScreenPresenter(
       allTags = articles.tags(),
       articleSummaryToShow = articleSummaryToShow,
       articles = articles.filteredBy(selectedTags),
+      bookmarkMessage = bookmarkMessage,
       eventSink = { event ->
         when (event) {
           is Event.SettingsClicked -> navigator.goTo(SettingsScreen)
@@ -154,6 +159,10 @@ internal class HomeScreenPresenter(
           is Event.BookmarksClicked -> {
             navigator.goTo(BookmarksScreen)
           }
+
+          is Event.BookmarkToastResult -> {
+            bookmarkMessage = null
+          }
         }
       },
       articlesEventSink = { event ->
@@ -161,14 +170,16 @@ internal class HomeScreenPresenter(
           is ArticlesUiEvent.ArticleClicked -> navigator.goTo(ReaderScreen(event.item.id))
 
           is ArticlesUiEvent.ArticleBookmarkClicked -> {
-            coroutineScope.launch {
-              catchupService.saveArticle(event.item.copy(saved = !event.item.saved))
-                .onSuccess {
-                  contentTriggers = contentTriggers.copy(
-                    articleBookmarked = !contentTriggers.articleBookmarked
-                  )
-                }
-            }
+            bookmarkMessage = BookmarkMessage.ADDED
+
+//            coroutineScope.launch {
+//              catchupService.saveArticle(event.item.copy(saved = !event.item.saved))
+//                .onSuccess {
+//                  contentTriggers = contentTriggers.copy(
+//                    articleBookmarked = !contentTriggers.articleBookmarked
+//                  )
+//                }
+//            }
           }
 
           is ArticlesUiEvent.ArticleSummarizeClicked -> {

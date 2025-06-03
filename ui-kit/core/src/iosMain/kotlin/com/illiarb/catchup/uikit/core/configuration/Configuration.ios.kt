@@ -13,4 +13,10 @@ public actual fun getScreenWidth(): Dp {
   return LocalWindowInfo.current.containerSize.width.pxToPoint().dp
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+public actual fun getScreenHeight(): Dp {
+  return LocalWindowInfo.current.containerSize.height.pxToPoint().dp
+}
+
 private fun Int.pxToPoint(): Double = this.toDouble() / UIScreen.mainScreen.scale()
