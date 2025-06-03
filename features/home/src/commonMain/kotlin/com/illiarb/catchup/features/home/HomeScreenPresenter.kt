@@ -170,16 +170,14 @@ internal class HomeScreenPresenter(
           is ArticlesUiEvent.ArticleClicked -> navigator.goTo(ReaderScreen(event.item.id))
 
           is ArticlesUiEvent.ArticleBookmarkClicked -> {
-            bookmarkMessage = BookmarkMessage.ADDED
-
-//            coroutineScope.launch {
-//              catchupService.saveArticle(event.item.copy(saved = !event.item.saved))
-//                .onSuccess {
-//                  contentTriggers = contentTriggers.copy(
-//                    articleBookmarked = !contentTriggers.articleBookmarked
-//                  )
-//                }
-//            }
+            coroutineScope.launch {
+              catchupService.saveArticle(event.item.copy(saved = !event.item.saved))
+                .onSuccess {
+                  contentTriggers = contentTriggers.copy(
+                    articleBookmarked = !contentTriggers.articleBookmarked
+                  )
+                }
+            }
           }
 
           is ArticlesUiEvent.ArticleSummarizeClicked -> {

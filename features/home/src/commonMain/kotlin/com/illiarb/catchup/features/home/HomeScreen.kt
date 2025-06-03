@@ -11,9 +11,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Bookmarks
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomAppBar
@@ -51,8 +49,6 @@ import com.illiarb.catchup.uikit.core.components.FullscreenErrorState
 import com.illiarb.catchup.uikit.core.components.HorizontalList
 import com.illiarb.catchup.uikit.core.components.SelectableCircleAvatar
 import com.illiarb.catchup.uikit.core.components.SelectableCircleAvatarLoading
-import com.illiarb.catchup.uikit.core.components.ToastMessage
-import com.illiarb.catchup.uikit.core.model.VectorIcon
 import com.illiarb.catchup.uikit.resources.Res
 import com.illiarb.catchup.uikit.resources.acsb_action_bookmarks
 import com.illiarb.catchup.uikit.resources.acsb_action_filter
@@ -250,18 +246,6 @@ private fun HomeScreen(state: HomeScreen.State) {
         }
       }
     }
-
-    ToastMessage(
-      show = state.bookmarkMessage != null,
-      text = "Added to bookmarks",
-      icon = VectorIcon(
-        imageVector = Icons.Filled.Check,
-        contentDescription = "Added",
-      ),
-      onDismiss = {
-        eventSink.invoke(Event.BookmarkToastResult)
-      },
-    )
   }
 }
 
