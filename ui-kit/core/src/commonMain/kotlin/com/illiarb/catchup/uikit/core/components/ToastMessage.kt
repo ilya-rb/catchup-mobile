@@ -1,8 +1,11 @@
 package com.illiarb.catchup.uikit.core.components
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.EaseInCubic
+import androidx.compose.animation.core.EaseOutCubic
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -23,17 +26,16 @@ import androidx.compose.ui.unit.dp
 import com.illiarb.catchup.uikit.core.configuration.getScreenHeight
 import com.illiarb.catchup.uikit.core.model.VectorIcon
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 public fun ToastMessage(
   show: Boolean,
   text: String,
-  durationMillis: Int = 2000,
   modifier: Modifier = Modifier,
-  bottomPadding: Dp = 48.dp,
-  onDismiss: (() -> Unit)? = null,
   icon: VectorIcon? = null,
+  bottomPadding: Dp = 48.dp,
+  durationMillis: Int = 2000,
+  onDismiss: (() -> Unit)? = null,
 ) {
   val density = LocalDensity.current
   val screenHeightPx = with(density) { getScreenHeight().toPx() }
@@ -44,19 +46,29 @@ public fun ToastMessage(
     if (show) {
       offsetY.snapTo(screenHeightPx)
       alpha.snapTo(0f)
-      // Animate in
-      launch {
-        offsetY.animateTo(0f, animationSpec = tween(350))
-      }
-      launch {
-        alpha.animateTo(1f, animationSpec = tween(350))
-      }
+
+      // Animate in with bounce (overshoot)
+      offsetY.animateTo(
+        targetValue = -20f,
+        animationSpec = tween(durationMillis = 420, easing = EaseOutCubic)
+      )
+      offsetY.animateTo(
+        targetValue = 0f,
+        animationSpec = tween(durationMillis = 320, easing = EaseInCubic)
+      )
+      alpha.animateTo(1f, animationSpec = tween(400))
+
       // Stay visible
       delay(durationMillis.toLong())
+
       // Animate out with bounce
-      offsetY.animateTo(-20f, animationSpec = tween(120))
-      offsetY.animateTo(screenHeightPx, animationSpec = tween(300))
-      alpha.animateTo(0f, animationSpec = tween(200))
+      offsetY.animateTo(-20f, animationSpec = tween(durationMillis = 180, easing = EaseOutCubic))
+      offsetY.animateTo(
+        screenHeightPx,
+        animationSpec = tween(durationMillis = 420, easing = EaseInCubic)
+      )
+      alpha.animateTo(0f, animationSpec = tween(300))
+
       onDismiss?.invoke()
     } else {
       offsetY.snapTo(screenHeightPx)
@@ -70,16 +82,16 @@ public fun ToastMessage(
   ) {
     if (alpha.value > 0f) {
       Surface(
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        shape = MaterialTheme.shapes.medium,
+        shadowElevation = 8.dp,
         modifier = modifier
           .padding(bottom = bottomPadding)
           .wrapContentHeight()
           .alpha(alpha.value)
           .graphicsLayer(translationY = offsetY.value),
-        color = MaterialTheme.colorScheme.surfaceVariant,
-        shape = MaterialTheme.shapes.medium,
-        shadowElevation = 8.dp
       ) {
-        androidx.compose.foundation.layout.Row(
+        Row(
           verticalAlignment = Alignment.CenterVertically,
           modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
         ) {
