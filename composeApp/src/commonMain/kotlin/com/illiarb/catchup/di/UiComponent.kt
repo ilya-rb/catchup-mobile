@@ -1,10 +1,12 @@
 package com.illiarb.catchup.di
 
+import com.illiarb.catchup.core.arch.message.MessageDispatcher
 import com.illiarb.catchup.di.scope.ActivityScope
 import com.illiarb.catchup.features.home.HomeScreenComponent
 import com.illiarb.catchup.features.home.bookmarks.BookmarksScreenComponent
 import com.illiarb.catchup.features.reader.ReaderScreenComponent
 import com.illiarb.catchup.features.settings.di.SettingsScreenComponent
+import com.illiarb.catchup.message.ToastMessageDispatcher
 import com.illiarb.catchup.summarizer.di.SummaryScreenComponent
 import com.slack.circuit.foundation.Circuit
 import com.slack.circuit.runtime.presenter.Presenter
@@ -19,6 +21,7 @@ internal interface UiComponent :
   BookmarksScreenComponent {
 
   val circuit: Circuit
+  val messageDispatcher: ToastMessageDispatcher
 
   @ActivityScope
   @Provides
@@ -30,5 +33,16 @@ internal interface UiComponent :
       .addPresenterFactories(presenterFactories)
       .addUiFactories(uiFactories)
       .build()
+  }
+
+  @ActivityScope
+  @Provides
+  fun provideToastMessageDispatcher(): ToastMessageDispatcher {
+    return ToastMessageDispatcher()
+  }
+
+  @Provides
+  fun provideMessageDispatcher(dispatcher: ToastMessageDispatcher): MessageDispatcher {
+    return dispatcher
   }
 }

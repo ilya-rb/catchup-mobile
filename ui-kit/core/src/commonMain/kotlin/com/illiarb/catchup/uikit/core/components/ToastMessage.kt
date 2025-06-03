@@ -9,6 +9,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -23,16 +27,26 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.illiarb.catchup.uikit.core.components.ToastMessage.ToastType
 import com.illiarb.catchup.uikit.core.configuration.getScreenHeight
 import com.illiarb.catchup.uikit.core.model.VectorIcon
 import kotlinx.coroutines.delay
 
+public data class ToastMessage(
+  val content: String,
+  val type: ToastType,
+) {
+  public enum class ToastType {
+    DEFAULT,
+    SUCCESS,
+    ERROR,
+  }
+}
+
 @Composable
 public fun ToastMessage(
-  show: Boolean,
-  text: String,
+  message: ToastMessage?,
   modifier: Modifier = Modifier,
-  icon: VectorIcon? = null,
   bottomPadding: Dp = 48.dp,
   durationMillis: Int = 2000,
   onDismiss: (() -> Unit)? = null,
@@ -41,6 +55,7 @@ public fun ToastMessage(
   val screenHeightPx = with(density) { getScreenHeight().toPx() }
   val offsetY = remember { Animatable(screenHeightPx) }
   val alpha = remember { Animatable(0f) }
+  val show = message != null
 
   LaunchedEffect(show, screenHeightPx) {
     if (show) {
@@ -81,8 +96,18 @@ public fun ToastMessage(
     contentAlignment = Alignment.BottomCenter
   ) {
     if (alpha.value > 0f) {
+      val background = when (message) {
+        null -> MaterialTheme.colorScheme.surfaceVariant
+        else -> {
+          when (message.type) {
+            ToastType.ERROR -> MaterialTheme.colorScheme.error
+            else -> MaterialTheme.colorScheme.surfaceVariant
+          }
+        }
+      }
+
       Surface(
-        color = MaterialTheme.colorScheme.surfaceVariant,
+        color = background,
         shape = MaterialTheme.shapes.medium,
         shadowElevation = 8.dp,
         modifier = modifier
@@ -95,19 +120,31 @@ public fun ToastMessage(
           verticalAlignment = Alignment.CenterVertically,
           modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
         ) {
-          if (icon != null) {
+          if (message != null) {
+            val icon = when (message.type) {
+              ToastType.DEFAULT -> Icons.Default.Info
+              ToastType.SUCCESS -> Icons.Default.Check
+              ToastType.ERROR -> Icons.Default.Error
+            }
+
+            val color = when (message.type) {
+              ToastType.ERROR -> MaterialTheme.colorScheme.onError
+              else -> MaterialTheme.colorScheme.onSurfaceVariant
+            }
+
             Icon(
-              imageVector = icon.imageVector,
-              contentDescription = icon.contentDescription,
-              tint = MaterialTheme.colorScheme.onSurfaceVariant,
+              imageVector = icon,
+              contentDescription = "",
+              tint = color,
               modifier = Modifier.padding(end = 12.dp)
             )
+
+            Text(
+              text = message.content,
+              color = color,
+              style = MaterialTheme.typography.bodyMedium
+            )
           }
-          Text(
-            text = text,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            style = MaterialTheme.typography.bodyMedium
-          )
         }
       }
     }

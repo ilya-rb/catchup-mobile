@@ -87,161 +87,159 @@ public class HomeScreenFactory : Ui.Factory {
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalHazeMaterialsApi::class)
 @Composable
 private fun HomeScreen(state: HomeScreen.State) {
-  ContentWithOverlays {
-    val eventSink = state.eventSink
-    val articlesEventSink = state.articlesEventSink
+  val eventSink = state.eventSink
+  val articlesEventSink = state.articlesEventSink
 
-    val bottomSheetContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-    val bottomBarBehavior = BottomAppBarDefaults.exitAlwaysScrollBehavior()
-    val bottomBarAlpha = 1 - bottomBarBehavior.state.collapsedFraction
+  val bottomSheetContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+  val bottomBarBehavior = BottomAppBarDefaults.exitAlwaysScrollBehavior()
+  val bottomBarAlpha = 1 - bottomBarBehavior.state.collapsedFraction
 
-    val topBarBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+  val topBarBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
-    val hazeState = rememberHazeState()
-    val hazeStyle = HazeMaterials.thin(MaterialTheme.colorScheme.surface)
+  val hazeState = rememberHazeState()
+  val hazeStyle = HazeMaterials.thin(MaterialTheme.colorScheme.surface)
 
-    val articleFilterVisible by derivedStateOf { state.allTags.isNotEmpty() }
+  val articleFilterVisible by derivedStateOf { state.allTags.isNotEmpty() }
 
-    when {
-      state.filtersShowing -> {
-        OverlayEffect(Unit) {
-          val result = showTagFilterOverlay(
-            TagFilterContract.Input(
-              allTags = state.allTags,
-              selectedTags = state.selectedTags,
-              containerColor = bottomSheetContainerColor,
-            ),
-          )
-          eventSink.invoke(Event.TagFilterResult(result))
-        }
-      }
-
-      state.articleSummaryToShow != null -> {
-        OverlayEffect(Unit) {
-          val result = showSummaryOverlay(
-            SummaryScreen(
-              state.articleSummaryToShow.id,
-              context = SummaryScreen.Context.HOME,
-            ),
-          )
-          eventSink.invoke(Event.SummaryResult(result))
-        }
+  when {
+    state.filtersShowing -> {
+      OverlayEffect(Unit) {
+        val result = showTagFilterOverlay(
+          TagFilterContract.Input(
+            allTags = state.allTags,
+            selectedTags = state.selectedTags,
+            containerColor = bottomSheetContainerColor,
+          ),
+        )
+        eventSink.invoke(Event.TagFilterResult(result))
       }
     }
 
-    Scaffold(
-      modifier = Modifier
-        .nestedScroll(bottomBarBehavior.nestedScrollConnection)
-        .nestedScroll(topBarBehavior.nestedScrollConnection),
-      topBar = {
-        CenterAlignedTopAppBar(
-          scrollBehavior = topBarBehavior,
-          colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Transparent,
-            scrolledContainerColor = Color.Transparent,
+    state.articleSummaryToShow != null -> {
+      OverlayEffect(Unit) {
+        val result = showSummaryOverlay(
+          SummaryScreen(
+            state.articleSummaryToShow.id,
+            context = SummaryScreen.Context.HOME,
           ),
-          modifier = Modifier.hazeEffect(state = hazeState, style = hazeStyle),
-          title = {
-            Text(stringResource(Res.string.home_screen_title))
-          },
-          actions = {
-            IconButton(onClick = { eventSink.invoke(Event.BookmarksClicked) }) {
-              Icon(
-                imageVector = Icons.Filled.Bookmarks,
-                contentDescription = stringResource(Res.string.acsb_action_bookmarks),
-              )
-            }
-            IconButton(onClick = { eventSink.invoke(Event.SettingsClicked) }) {
-              Icon(
-                imageVector = Icons.Filled.Settings,
-                contentDescription = stringResource(Res.string.acsb_action_settings),
-              )
-            }
-          },
         )
-      },
-      bottomBar = {
-        BottomAppBar(
-          modifier = Modifier.hazeEffect(state = hazeState, style = hazeStyle),
-          scrollBehavior = bottomBarBehavior,
+        eventSink.invoke(Event.SummaryResult(result))
+      }
+    }
+  }
+
+  Scaffold(
+    modifier = Modifier
+      .nestedScroll(bottomBarBehavior.nestedScrollConnection)
+      .nestedScroll(topBarBehavior.nestedScrollConnection),
+    topBar = {
+      CenterAlignedTopAppBar(
+        scrollBehavior = topBarBehavior,
+        colors = TopAppBarDefaults.topAppBarColors(
           containerColor = Color.Transparent,
-          actions = {
-            AnimatedContent(
-              targetState = state.newsSources,
-              transitionSpec = { fadeIn().togetherWith(fadeOut()) },
-              contentKey = { it is Async.Content },
-            ) { targetState ->
-              when (targetState) {
-                is Async.Loading -> {
-                  NewsSourcesLoading(Modifier.padding(start = 16.dp))
-                }
-
-                is Async.Content -> {
-                  NewsSourcesContent(
-                    newsSources = targetState.content,
-                    selectedTabIndex = state.selectedNewsSourceIndex,
-                    onTabClick = { eventSink.invoke(Event.TabClicked(it)) },
-                    modifier = Modifier
-                      .padding(start = 16.dp)
-                      .alpha(bottomBarAlpha)
-                  )
-                }
-
-                else -> Unit
+          scrolledContainerColor = Color.Transparent,
+        ),
+        modifier = Modifier.hazeEffect(state = hazeState, style = hazeStyle),
+        title = {
+          Text(stringResource(Res.string.home_screen_title))
+        },
+        actions = {
+          IconButton(onClick = { eventSink.invoke(Event.BookmarksClicked) }) {
+            Icon(
+              imageVector = Icons.Filled.Bookmarks,
+              contentDescription = stringResource(Res.string.acsb_action_bookmarks),
+            )
+          }
+          IconButton(onClick = { eventSink.invoke(Event.SettingsClicked) }) {
+            Icon(
+              imageVector = Icons.Filled.Settings,
+              contentDescription = stringResource(Res.string.acsb_action_settings),
+            )
+          }
+        },
+      )
+    },
+    bottomBar = {
+      BottomAppBar(
+        modifier = Modifier.hazeEffect(state = hazeState, style = hazeStyle),
+        scrollBehavior = bottomBarBehavior,
+        containerColor = Color.Transparent,
+        actions = {
+          AnimatedContent(
+            targetState = state.newsSources,
+            transitionSpec = { fadeIn().togetherWith(fadeOut()) },
+            contentKey = { it is Async.Content },
+          ) { targetState ->
+            when (targetState) {
+              is Async.Loading -> {
+                NewsSourcesLoading(Modifier.padding(start = 16.dp))
               }
-            }
-          },
-          floatingActionButton = {
-            AnimatedVisibility(
-              visible = articleFilterVisible,
-              enter = scaleIn(),
-              exit = scaleOut(),
-            ) {
-              IconButton(
-                colors = IconButtonDefaults.iconButtonColors().copy(
-                  containerColor = MaterialTheme.colorScheme.primary,
-                  contentColor = MaterialTheme.colorScheme.onPrimary,
-                ),
-                onClick = { eventSink.invoke(Event.FiltersClicked) },
-                modifier = Modifier.alpha(bottomBarAlpha),
-              ) {
-                Icon(
-                  imageVector = Icons.Filled.FilterList,
-                  contentDescription = stringResource(Res.string.acsb_action_filter),
+
+              is Async.Content -> {
+                NewsSourcesContent(
+                  newsSources = targetState.content,
+                  selectedTabIndex = state.selectedNewsSourceIndex,
+                  onTabClick = { eventSink.invoke(Event.TabClicked(it)) },
+                  modifier = Modifier
+                    .padding(start = 16.dp)
+                    .alpha(bottomBarAlpha)
                 )
               }
+
+              else -> Unit
             }
           }
-        )
-      },
-    ) { innerPadding ->
-      AnimatedContent(
-        contentKey = { state.articlesStateKey() },
-        targetState = state.articles,
-        transitionSpec = { fadeIn().togetherWith(fadeOut()) },
-      ) { targetState ->
-        when {
-          targetState is Async.Error || state.newsSources is Async.Error -> {
-            FullscreenErrorState(Modifier.padding(innerPadding), ErrorStateKind.UNKNOWN) {
-              eventSink.invoke(Event.ErrorRetryClicked)
-            }
-          }
-
-          targetState is Async.Loading -> {
-            ArticlesLoading(contentPadding = innerPadding)
-          }
-
-          targetState is Async.Content -> {
-            if (targetState.content.isEmpty()) {
-              ArticlesEmpty(contentPadding = innerPadding, eventSink = articlesEventSink)
-            } else {
-              ArticlesContent(
-                modifier = Modifier.hazeSource(state = hazeState),
-                contentPadding = innerPadding,
-                articles = targetState.content,
-                eventSink = articlesEventSink,
+        },
+        floatingActionButton = {
+          AnimatedVisibility(
+            visible = articleFilterVisible,
+            enter = scaleIn(),
+            exit = scaleOut(),
+          ) {
+            IconButton(
+              colors = IconButtonDefaults.iconButtonColors().copy(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+              ),
+              onClick = { eventSink.invoke(Event.FiltersClicked) },
+              modifier = Modifier.alpha(bottomBarAlpha),
+            ) {
+              Icon(
+                imageVector = Icons.Filled.FilterList,
+                contentDescription = stringResource(Res.string.acsb_action_filter),
               )
             }
+          }
+        }
+      )
+    },
+  ) { innerPadding ->
+    AnimatedContent(
+      contentKey = { state.articlesStateKey() },
+      targetState = state.articles,
+      transitionSpec = { fadeIn().togetherWith(fadeOut()) },
+    ) { targetState ->
+      when {
+        targetState is Async.Error || state.newsSources is Async.Error -> {
+          FullscreenErrorState(Modifier.padding(innerPadding), ErrorStateKind.UNKNOWN) {
+            eventSink.invoke(Event.ErrorRetryClicked)
+          }
+        }
+
+        targetState is Async.Loading -> {
+          ArticlesLoading(contentPadding = innerPadding)
+        }
+
+        targetState is Async.Content -> {
+          if (targetState.content.isEmpty()) {
+            ArticlesEmpty(contentPadding = innerPadding, eventSink = articlesEventSink)
+          } else {
+            ArticlesContent(
+              modifier = Modifier.hazeSource(state = hazeState),
+              contentPadding = innerPadding,
+              articles = targetState.content,
+              eventSink = articlesEventSink,
+            )
           }
         }
       }

@@ -26,6 +26,7 @@ kotlin {
       implementation(libs.androidx.browser)
       implementation(libs.circuit.core)
       implementation(libs.circuit.x.android)
+      implementation(libs.circuit.x.overlay)
       implementation(libs.circuit.x.gestureNavigation)
     }
 

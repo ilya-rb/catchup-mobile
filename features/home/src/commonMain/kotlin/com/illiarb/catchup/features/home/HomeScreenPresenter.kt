@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import com.illiarb.catchup.core.arch.ShareScreen
+import com.illiarb.catchup.core.arch.message.MessageDispatcher
 import com.illiarb.catchup.core.data.Async
 import com.illiarb.catchup.core.data.mapContent
 import com.illiarb.catchup.features.home.HomeScreen.BookmarkMessage
@@ -37,6 +38,7 @@ import me.tatarka.inject.annotations.Inject
 @Inject
 public class HomeScreenPresenterFactory(
   private val catchupService: CatchupService,
+  private val messageDispatcher: MessageDispatcher,
 ) : Presenter.Factory {
   override fun create(
     screen: Screen,
@@ -44,7 +46,7 @@ public class HomeScreenPresenterFactory(
     context: CircuitContext
   ): Presenter<*>? {
     return when (screen) {
-      is HomeScreen -> HomeScreenPresenter(catchupService, navigator)
+      is HomeScreen -> HomeScreenPresenter(catchupService, navigator, messageDispatcher)
       else -> null
     }
   }
@@ -53,6 +55,7 @@ public class HomeScreenPresenterFactory(
 internal class HomeScreenPresenter(
   private val catchupService: CatchupService,
   private val navigator: Navigator,
+  private val messageDispatcher: MessageDispatcher,
 ) : Presenter<HomeScreen.State> {
 
   @Composable
@@ -171,10 +174,21 @@ internal class HomeScreenPresenter(
 
           is ArticlesUiEvent.ArticleBookmarkClicked -> {
             coroutineScope.launch {
-              catchupService.saveArticle(event.item.copy(saved = !event.item.saved))
+              val saved = !event.item.saved
+
+              catchupService.saveArticle(event.item.copy(saved = saved))
                 .onSuccess {
                   contentTriggers = contentTriggers.copy(
                     articleBookmarked = !contentTriggers.articleBookmarked
+                  )
+                  // TODO: move to resources
+                  val message = if (saved) "Added to bookmarks" else "Removed from bookmarks"
+
+                  messageDispatcher.sendMessage(
+                    MessageDispatcher.Message(
+                      content = message,
+                      type = MessageDispatcher.Message.MessageType.SUCCESS
+                    )
                   )
                 }
             }
