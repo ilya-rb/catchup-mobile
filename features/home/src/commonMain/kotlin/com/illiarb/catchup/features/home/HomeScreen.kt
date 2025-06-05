@@ -136,7 +136,6 @@ private fun HomeScreen(state: HomeScreen.State) {
       CenterAlignedTopAppBar(
         scrollBehavior = topBarBehavior,
         colors = TopAppBarDefaults.topAppBarColors(
-          containerColor = Color.Transparent,
           scrolledContainerColor = Color.Transparent,
         ),
         modifier = Modifier.hazeEffect(state = hazeState, style = hazeStyle),
