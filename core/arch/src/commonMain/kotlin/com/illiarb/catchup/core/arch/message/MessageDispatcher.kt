@@ -11,7 +11,6 @@ public interface MessageDispatcher {
     val type: MessageType
   ) {
     public enum class MessageType {
-      DEFAULT,
       SUCCESS,
       ERROR,
     }
