@@ -1,8 +1,16 @@
 package com.illiarb.catchup.uikit.core.components
 
-import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.Easing
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.Box
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -10,34 +18,53 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
 import kotlinx.coroutines.delay
+import kotlin.time.Duration
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 public fun TextSwitcher(
-  firstText: String,
-  secondText: String,
-  seconds: Int,
-  modifier: Modifier = Modifier
+  first: String,
+  second: String,
+  switchEvery: Duration,
+  containerHeightDp: Int,
+  modifier: Modifier = Modifier,
+  durationMillis: Int = 300,
+  easing: Easing = FastOutSlowInEasing,
 ) {
   var showFirst by remember { mutableStateOf(true) }
-  val alpha = remember { Animatable(1f) }
 
-  LaunchedEffect(showFirst) {
-    alpha.snapTo(1f)
-    delay(seconds * 1000L)
-    alpha.animateTo(0f, animationSpec = tween(400))
-    showFirst = !showFirst
-    alpha.snapTo(1f)
-  }
-
-  Box(modifier = modifier, contentAlignment = Alignment.Center) {
-    if (showFirst) {
-      Text(text = firstText, modifier = Modifier.graphicsLayer(alpha = alpha.value))
-    } else {
-      Text(text = secondText, modifier = Modifier.graphicsLayer(alpha = alpha.value))
+  LaunchedEffect(Unit) {
+    while (true) {
+      delay(switchEvery.inWholeMilliseconds)
+      showFirst = !showFirst
     }
   }
-} 
+
+  AnimatedContent(
+    modifier = modifier,
+    targetState = showFirst,
+    transitionSpec = {
+      val enter = slideInVertically(
+        animationSpec = tween(durationMillis, easing = easing),
+        initialOffsetY = { containerHeightDp },
+      ) + fadeIn()
+
+      val exit = slideOutVertically(
+        animationSpec = tween(durationMillis, easing = easing),
+        targetOffsetY = { -containerHeightDp }
+      ) + fadeOut()
+
+      enter togetherWith exit
+    },
+  ) { showFirst ->
+    val modifier = Modifier.fillMaxWidth()
+
+    if (showFirst) {
+      Text(text = first, modifier = modifier)
+    } else {
+      Text(text = second, modifier = modifier)
+    }
+  }
+}

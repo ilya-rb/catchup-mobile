@@ -16,7 +16,6 @@ import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,6 +23,7 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -49,12 +49,15 @@ import com.illiarb.catchup.uikit.core.components.FullscreenErrorState
 import com.illiarb.catchup.uikit.core.components.HorizontalList
 import com.illiarb.catchup.uikit.core.components.SelectableCircleAvatar
 import com.illiarb.catchup.uikit.core.components.SelectableCircleAvatarLoading
+import com.illiarb.catchup.uikit.core.components.TextSwitcher
 import com.illiarb.catchup.uikit.resources.Res
 import com.illiarb.catchup.uikit.resources.acsb_action_bookmarks
 import com.illiarb.catchup.uikit.resources.acsb_action_filter
 import com.illiarb.catchup.uikit.resources.acsb_action_settings
 import com.illiarb.catchup.uikit.resources.home_screen_title
-import com.slack.circuit.overlay.ContentWithOverlays
+import com.illiarb.catchup.uikit.resources.service_dou_name
+import com.illiarb.catchup.uikit.resources.service_hacker_news_name
+import com.illiarb.catchup.uikit.resources.service_irish_times_name
 import com.slack.circuit.overlay.OverlayEffect
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.screen.Screen
@@ -68,6 +71,7 @@ import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.collections.immutable.ImmutableList
 import me.tatarka.inject.annotations.Inject
 import org.jetbrains.compose.resources.stringResource
+import kotlin.time.Duration.Companion.seconds
 
 @Inject
 public class HomeScreenFactory : Ui.Factory {
@@ -133,14 +137,31 @@ private fun HomeScreen(state: HomeScreen.State) {
       .nestedScroll(bottomBarBehavior.nestedScrollConnection)
       .nestedScroll(topBarBehavior.nestedScrollConnection),
     topBar = {
-      CenterAlignedTopAppBar(
+      TopAppBar(
         scrollBehavior = topBarBehavior,
         colors = TopAppBarDefaults.topAppBarColors(
           scrolledContainerColor = Color.Transparent,
         ),
         modifier = Modifier.hazeEffect(state = hazeState, style = hazeStyle),
         title = {
-          Text(stringResource(Res.string.home_screen_title))
+          when (val newsSources = state.newsSources) {
+            is Async.Content -> {
+              val selectedSource = newsSources.content[state.selectedNewsSourceIndex]
+              val name = when (selectedSource.kind) {
+                NewsSource.Kind.Dou -> stringResource(Res.string.service_dou_name)
+                NewsSource.Kind.HackerNews -> stringResource(Res.string.service_hacker_news_name)
+                NewsSource.Kind.IrishTimes -> stringResource(Res.string.service_irish_times_name)
+              }
+              TextSwitcher(
+                first = stringResource(Res.string.home_screen_title),
+                second = name,
+                containerHeightDp = TopAppBarDefaults.TopAppBarExpandedHeight.value.toInt(),
+                switchEvery = 5.seconds,
+              )
+            }
+
+            else -> Text(stringResource(Res.string.home_screen_title))
+          }
         },
         actions = {
           IconButton(onClick = { eventSink.invoke(Event.BookmarksClicked) }) {

@@ -8,8 +8,7 @@ public data class NewsSource(
   public enum class Kind(public val key: String) {
     IrishTimes(key = "irishtimes"),
     HackerNews(key = "hackernews"),
-    Dou(key = "dou"),
-    Unknown(key = "unknown");
+    Dou(key = "dou");
 
     public companion object {
 
@@ -18,7 +17,7 @@ public data class NewsSource(
           IrishTimes.key -> IrishTimes
           HackerNews.key -> HackerNews
           Dou.key -> Dou
-          else -> Unknown
+          else -> throw IllegalArgumentException("Unknown key: $key")
         }
       }
     }
