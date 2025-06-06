@@ -5,13 +5,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -23,10 +21,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
@@ -39,10 +33,10 @@ import com.illiarb.catchup.core.data.Async
 import com.illiarb.catchup.features.reader.ReaderScreen.Event
 import com.illiarb.catchup.summarizer.ui.SummaryScreen
 import com.illiarb.catchup.summarizer.ui.showSummaryOverlay
-import com.illiarb.catchup.uikit.core.components.cell.ArticleReaderLoading
-import com.illiarb.catchup.uikit.core.components.cell.FullscreenErrorState
 import com.illiarb.catchup.uikit.core.components.TopAppBarTitleLoading
 import com.illiarb.catchup.uikit.core.components.WebView
+import com.illiarb.catchup.uikit.core.components.cell.ArticleReaderLoading
+import com.illiarb.catchup.uikit.core.components.cell.FullscreenErrorState
 import com.illiarb.catchup.uikit.core.components.popup.OpenInBrowserAction
 import com.illiarb.catchup.uikit.core.components.popup.ShareAction
 import com.illiarb.catchup.uikit.core.components.popup.SummarizeAction
@@ -91,8 +85,6 @@ private fun ReaderScreen(
   val percent = (contentScrollState.value.toFloat() / contentScrollState.maxValue.toFloat()) * 100f
   val scrolledWidth = percent / 100f * screenWidth.value
 
-  var pageLoaded by remember { mutableStateOf(false) }
-
   if (state.summaryShowing) {
     OverlayEffect(Unit) {
       showSummaryOverlay(
@@ -135,20 +127,13 @@ private fun ReaderScreen(
         },
         actions = {
           Box {
-            if (pageLoaded) {
-              IconButton(
-                onClick = { eventSink.invoke(Event.TopBarMenuClicked) },
-                enabled = state.article is Async.Content,
-              ) {
-                Icon(
-                  imageVector = Icons.Filled.MoreVert,
-                  contentDescription = stringResource(Res.string.acsb_action_more),
-                )
-              }
-            } else {
-              CircularProgressIndicator(
-                strokeWidth = 2.dp,
-                modifier = Modifier.padding(end = 16.dp).size(24.dp)
+            IconButton(
+              onClick = { eventSink.invoke(Event.TopBarMenuClicked) },
+              enabled = state.article is Async.Content,
+            ) {
+              Icon(
+                imageVector = Icons.Filled.MoreVert,
+                contentDescription = stringResource(Res.string.acsb_action_more),
               )
             }
 
@@ -207,7 +192,6 @@ private fun ReaderScreen(
         is Async.Content -> {
           WebView(
             url = state.article.content.link.url,
-            onPageLoaded = { pageLoaded = true },
             modifier = modifier.fillMaxSize().verticalScroll(contentScrollState),
           )
         }
