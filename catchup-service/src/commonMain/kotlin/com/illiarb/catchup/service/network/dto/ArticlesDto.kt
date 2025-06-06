@@ -4,7 +4,7 @@ import com.illiarb.catchup.service.domain.Article
 import com.illiarb.catchup.service.domain.NewsSource
 import com.illiarb.catchup.service.domain.Tag
 import com.illiarb.catchup.service.domain.Url
-import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -21,6 +21,7 @@ internal data class ArticleDto(
   @SerialName("link") val link: String,
   @SerialName("source") val source: Source,
   @SerialName("tags") val tags: List<String>?,
+  @SerialName("date") val date: String,
 ) {
 
   fun asArticle(savedArticleIds: List<String>): Article {
@@ -31,7 +32,7 @@ internal data class ArticleDto(
       source = NewsSource.Kind.fromKey(source.key),
       tags = tags.orEmpty().map(::Tag),
       saved = id in savedArticleIds,
-      date = Clock.System.now(),
+      date = Instant.parse(date),
     )
   }
 }
