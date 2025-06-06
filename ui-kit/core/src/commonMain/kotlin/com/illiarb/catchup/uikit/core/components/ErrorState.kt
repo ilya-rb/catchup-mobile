@@ -17,28 +17,25 @@ import androidx.compose.ui.unit.dp
 import com.illiarb.catchup.uikit.resources.Res
 import com.illiarb.catchup.uikit.resources.common_error_default_action
 import com.illiarb.catchup.uikit.resources.common_error_default_title
-import com.illiarb.catchup.uikit.resources.home_articles_empty_action
-import com.illiarb.catchup.uikit.resources.home_articles_empty_title
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 public fun FullscreenErrorState(
   modifier: Modifier = Modifier,
-  errorType: ErrorStateKind,
-  onRefreshClick: () -> Unit,
+  onActionClick: () -> Unit,
 ) {
   Column(
     modifier = modifier.fillMaxSize(),
     horizontalAlignment = Alignment.CenterHorizontally,
   ) {
-    FullscreenState(
+    EmptyState(
       title = stringResource(Res.string.common_error_default_title),
       buttonText = stringResource(Res.string.common_error_default_action),
       buttonColors = ButtonDefaults.buttonColors().copy(
         containerColor = MaterialTheme.colorScheme.error,
         contentColor = MaterialTheme.colorScheme.onError,
       ),
-      onButtonClick = onRefreshClick,
+      onButtonClick = onActionClick,
       modifier = Modifier
         .fillMaxWidth()
         .padding(16.dp)
@@ -47,14 +44,8 @@ public fun FullscreenErrorState(
     ) {
       LocalLottieAnimation(
         modifier = Modifier.size(150.dp),
-        animationType = when (errorType) {
-          ErrorStateKind.UNKNOWN -> LottieAnimationType.ERROR
-        },
+        animationType = LottieAnimationType.ERROR,
       )
     }
   }
-}
-
-public enum class ErrorStateKind {
-  UNKNOWN
 }

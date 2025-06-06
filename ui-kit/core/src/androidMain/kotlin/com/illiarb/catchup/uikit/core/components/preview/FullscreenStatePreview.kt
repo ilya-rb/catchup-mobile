@@ -1,17 +1,14 @@
 package com.illiarb.catchup.uikit.core.components.preview
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.illiarb.catchup.uikit.core.components.FullscreenState
-import com.illiarb.catchup.uikit.core.theme.UiKitTheme
+import com.illiarb.catchup.uikit.core.components.EmptyState
 
 internal data class FullscreenStateData(
   val title: String,
@@ -37,7 +34,7 @@ internal fun FullscreenStatePreviewParameterizedLight(
   data: FullscreenStateData
 ) {
   PreviewTheme(darkMode = false) {
-    FullscreenState(
+    EmptyState(
       title = data.title,
       buttonText = if (data.hasButton) data.buttonText else null,
       onButtonClick = { },
@@ -63,7 +60,7 @@ internal fun FullscreenStatePreviewParameterizedDark(
   data: FullscreenStateData
 ) {
   PreviewTheme(darkMode = true) {
-    FullscreenState(
+    EmptyState(
       title = data.title,
       buttonText = if (data.hasButton) data.buttonText else null,
       onButtonClick = { },

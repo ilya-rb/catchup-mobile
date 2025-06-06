@@ -20,12 +20,17 @@ public data class ReaderScreen(val articleId: String) : Screen, CommonParcelable
   ) : CircuitUiState
 
   internal sealed interface Event {
+
     data object NavigationIconClicked : Event
     data object TopBarMenuClicked : Event
     data object TopBarMenuDismissed : Event
-    data object OpenInBrowserClicked : Event
-    data object SummarizeClicked : Event
     data object SummarizeCloseClicked : Event
     data object ErrorRetryClicked : Event
+
+    data object TopBarOpenInBrowser : Event, TopBarMenuAction
+    data object TopBarSummarize : Event, TopBarMenuAction
+    data object TopBarShare : Event, TopBarMenuAction
+
+    interface TopBarMenuAction
   }
 }

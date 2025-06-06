@@ -61,7 +61,10 @@ internal class SettingsScreenPresenter(
       debugSettings = debugSettings,
       events = { event ->
         when (event) {
-          is Event.NavigationIconClick -> navigator.pop()
+          is Event.NavigationIconClick -> {
+            navigator.pop()
+          }
+
           is Event.MaterialColorsToggleChecked -> coroutineScope.launch {
             settingsService.updateSetting(DYNAMIC_COLORS, event.checked)
           }

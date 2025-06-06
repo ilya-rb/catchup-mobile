@@ -14,16 +14,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.MoreHoriz
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.filled.Summarize
 import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,13 +30,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.illiarb.catchup.uikit.core.components.popup.ShareAction
+import com.illiarb.catchup.uikit.core.components.popup.SummarizeAction
 import com.illiarb.catchup.uikit.core.text.AuthorText
-import com.illiarb.catchup.uikit.resources.Res
-import com.illiarb.catchup.uikit.resources.acsb_action_share
-import com.illiarb.catchup.uikit.resources.acsb_action_summarize
-import com.illiarb.catchup.uikit.resources.reader_action_share
-import com.illiarb.catchup.uikit.resources.reader_action_summarize
-import org.jetbrains.compose.resources.stringResource
 import kotlinx.coroutines.launch
 
 @Composable
@@ -145,32 +137,14 @@ public fun ArticleCell(
           expanded = moreMenuExpanded,
           onDismissRequest = { moreMenuExpanded = false },
         ) {
-          DropdownMenuItem(
-            text = { Text(text = stringResource(Res.string.reader_action_summarize)) },
-            onClick = {
-              moreMenuExpanded = false
-              onSummarizeClick()
-            },
-            trailingIcon = {
-              Icon(
-                imageVector = Icons.Filled.Summarize,
-                contentDescription = stringResource(Res.string.acsb_action_summarize),
-              )
-            }
-          )
-          DropdownMenuItem(
-            text = { Text(text = stringResource(Res.string.reader_action_share)) },
-            onClick = {
-              moreMenuExpanded = false
-              onShareClick()
-            },
-            trailingIcon = {
-              Icon(
-                imageVector = Icons.Filled.Share,
-                contentDescription = stringResource(Res.string.acsb_action_share),
-              )
-            }
-          )
+          SummarizeAction {
+            moreMenuExpanded = false
+            onSummarizeClick()
+          }
+          ShareAction {
+            moreMenuExpanded = false
+            onShareClick()
+          }
         }
       }
     }

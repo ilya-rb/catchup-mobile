@@ -20,7 +20,6 @@ import com.illiarb.catchup.features.home.articles.ArticlesContent
 import com.illiarb.catchup.features.home.articles.ArticlesEmpty
 import com.illiarb.catchup.features.home.articles.ArticlesLoading
 import com.illiarb.catchup.features.home.bookmarks.BookmarksScreen.Event
-import com.illiarb.catchup.uikit.core.components.ErrorStateKind
 import com.illiarb.catchup.uikit.core.components.FullscreenErrorState
 import com.illiarb.catchup.uikit.resources.Res
 import com.illiarb.catchup.uikit.resources.acsb_navigation_back
@@ -77,7 +76,7 @@ private fun BookmarksScreen(state: BookmarksScreen.State) {
     ) { targetState ->
       when (targetState) {
         is Async.Error -> {
-          FullscreenErrorState(Modifier.padding(innerPadding), ErrorStateKind.UNKNOWN) {
+          FullscreenErrorState(Modifier.padding(innerPadding)) {
             eventSink.invoke(Event.ErrorRetryClicked)
           }
         }

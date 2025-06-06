@@ -1,7 +1,6 @@
 package com.illiarb.catchup.uikit.core.components.preview
 
 import androidx.compose.runtime.Composable
-import com.illiarb.catchup.uikit.core.components.ErrorStateKind
 import com.illiarb.catchup.uikit.core.components.FullscreenErrorState
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -9,10 +8,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Preview
 internal fun ErrorStatePreviewLight() {
   PreviewTheme(darkMode = false) {
-    FullscreenErrorState(
-      errorType = ErrorStateKind.UNKNOWN,
-      onRefreshClick = { },
-    )
+    FullscreenErrorState {}
   }
 }
 
@@ -20,9 +16,6 @@ internal fun ErrorStatePreviewLight() {
 @Preview
 internal fun ErrorStatePreviewDark() {
   PreviewTheme(darkMode = true) {
-    FullscreenErrorState(
-      errorType = ErrorStateKind.UNKNOWN,
-      onRefreshClick = { },
-    )
+    FullscreenErrorState {}
   }
 }

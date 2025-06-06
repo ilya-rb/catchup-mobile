@@ -15,7 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
-public fun FullscreenState(
+public fun EmptyState(
   modifier: Modifier = Modifier,
   title: String,
   buttonText: String?,

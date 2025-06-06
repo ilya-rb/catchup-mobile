@@ -1,6 +1,5 @@
 package com.illiarb.catchup.features.reader
 
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -11,12 +10,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Summarize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,31 +29,27 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.illiarb.catchup.core.data.Async
 import com.illiarb.catchup.features.reader.ReaderScreen.Event
-import com.illiarb.catchup.service.domain.Article
 import com.illiarb.catchup.summarizer.ui.SummaryScreen
 import com.illiarb.catchup.summarizer.ui.showSummaryOverlay
 import com.illiarb.catchup.uikit.core.components.ArticleReaderLoading
-import com.illiarb.catchup.uikit.core.components.ErrorStateKind
 import com.illiarb.catchup.uikit.core.components.FullscreenErrorState
 import com.illiarb.catchup.uikit.core.components.TopAppBarTitleLoading
 import com.illiarb.catchup.uikit.core.components.WebView
+import com.illiarb.catchup.uikit.core.components.popup.OpenInBrowserAction
+import com.illiarb.catchup.uikit.core.components.popup.ShareAction
+import com.illiarb.catchup.uikit.core.components.popup.SummarizeAction
 import com.illiarb.catchup.uikit.core.configuration.getScreenWidth
 import com.illiarb.catchup.uikit.resources.Res
 import com.illiarb.catchup.uikit.resources.acsb_action_more
-import com.illiarb.catchup.uikit.resources.acsb_action_open_in_browser
-import com.illiarb.catchup.uikit.resources.acsb_action_summarize
 import com.illiarb.catchup.uikit.resources.acsb_navigation_back
-import com.illiarb.catchup.uikit.resources.reader_action_open_in_browser
-import com.illiarb.catchup.uikit.resources.reader_action_summarize
-import com.slack.circuit.overlay.ContentWithOverlays
 import com.slack.circuit.overlay.OverlayEffect
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.screen.Screen
@@ -88,160 +80,138 @@ private fun ReaderScreen(
   screen: ReaderScreen,
   state: ReaderScreen.State,
 ) {
-  ContentWithOverlays {
-    val eventSink = state.eventSink
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+  val eventSink = state.eventSink
 
-    val startColor = MaterialTheme.colorScheme.surfaceContainerLow
-    val endColor = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.4f)
-    val contentScrollState = rememberScrollState()
-    val size = getScreenWidth() * LocalDensity.current.density
-    val percent = (contentScrollState.value.toFloat() / contentScrollState.maxValue.toFloat()) * 100f
-    val scrolledWidth = percent / 100f * size.value
+  val progressColor = MaterialTheme.colorScheme.primary
+  val progressSize = 8.dp
+  val screenWidth = getScreenWidth()
 
-    var pageLoaded by remember { mutableStateOf(false) }
+  val contentScrollState = rememberScrollState()
+  val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+  val percent = (contentScrollState.value.toFloat() / contentScrollState.maxValue.toFloat()) * 100f
+  val scrolledWidth = percent / 100f * screenWidth.value
 
-    if (state.summaryShowing) {
-      OverlayEffect(Unit) {
-        showSummaryOverlay(
-          SummaryScreen(articleId = screen.articleId, context = SummaryScreen.Context.READER)
-        )
-        eventSink.invoke(Event.SummarizeCloseClicked)
-      }
+  var pageLoaded by remember { mutableStateOf(false) }
+
+  if (state.summaryShowing) {
+    OverlayEffect(Unit) {
+      showSummaryOverlay(
+        SummaryScreen(articleId = screen.articleId, context = SummaryScreen.Context.READER)
+      )
+      eventSink.invoke(Event.SummarizeCloseClicked)
     }
+  }
 
-    Scaffold(
-      modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-      contentWindowInsets = WindowInsets(0, 0, 0, 0),
-      topBar = {
-        TopAppBar(
-          modifier = Modifier.drawWithContent {
-            drawContent()
-            drawRect(
-              brush = SolidColor(endColor),
-              size = Size(
-                height = this.size.height,
-                width = scrolledWidth.coerceIn(0f, this.size.width),
-              )
+  Scaffold(
+    modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+    contentWindowInsets = WindowInsets(0, 0, 0, 0),
+    topBar = {
+      TopAppBar(
+        modifier = Modifier.drawWithContent {
+          drawContent()
+          drawRect(
+            brush = SolidColor(progressColor),
+            size = Size(
+              height = progressSize.value,
+              width = scrolledWidth.coerceIn(0f, this.size.width),
+            ),
+            topLeft = Offset(
+              x = 0f,
+              y = this.size.height - progressSize.value,
             )
-          },
-          scrollBehavior = scrollBehavior,
-          colors = TopAppBarDefaults.topAppBarColors(
-            scrolledContainerColor = startColor,
-          ),
-          navigationIcon = {
-            IconButton(onClick = { eventSink.invoke(Event.NavigationIconClicked) }) {
-              Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = stringResource(Res.string.acsb_navigation_back),
+          )
+        },
+        scrollBehavior = scrollBehavior,
+        colors = TopAppBarDefaults.topAppBarColors(
+          scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        ),
+        navigationIcon = {
+          IconButton(onClick = { eventSink.invoke(Event.NavigationIconClicked) }) {
+            Icon(
+              imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+              contentDescription = stringResource(Res.string.acsb_navigation_back),
+            )
+          }
+        },
+        actions = {
+          Box {
+            if (pageLoaded) {
+              IconButton(
+                onClick = { eventSink.invoke(Event.TopBarMenuClicked) },
+                enabled = state.article is Async.Content,
+              ) {
+                Icon(
+                  imageVector = Icons.Filled.MoreVert,
+                  contentDescription = stringResource(Res.string.acsb_action_more),
+                )
+              }
+            } else {
+              CircularProgressIndicator(
+                strokeWidth = 2.dp,
+                modifier = Modifier.padding(end = 16.dp).size(24.dp)
               )
             }
-          },
-          actions = {
-            Box {
-              if (pageLoaded) {
-                IconButton(
-                  onClick = { eventSink.invoke(Event.TopBarMenuClicked) },
-                  enabled = state.article is Async.Content,
-                ) {
-                  Icon(
-                    imageVector = Icons.Filled.MoreVert,
-                    contentDescription = stringResource(Res.string.acsb_action_more),
-                  )
-                }
-              } else {
-                CircularProgressIndicator(
-                  strokeWidth = 2.dp,
-                  modifier = Modifier.padding(end = 16.dp).size(24.dp)
-                )
-              }
 
-              DropdownMenu(
-                expanded = state.topBarPopupShowing,
-                onDismissRequest = { eventSink.invoke(Event.TopBarMenuDismissed) },
-              ) {
-                DropdownMenuItem(
-                  text = { Text(text = stringResource(Res.string.reader_action_open_in_browser)) },
-                  onClick = { eventSink.invoke(Event.OpenInBrowserClicked) },
-                  trailingIcon = {
-                    Icon(
-                      imageVector = Icons.AutoMirrored.Filled.OpenInNew,
-                      contentDescription = stringResource(Res.string.acsb_action_open_in_browser),
-                    )
-                  },
-                )
-                DropdownMenuItem(
-                  text = { Text(text = stringResource(Res.string.reader_action_summarize)) },
-                  onClick = { eventSink.invoke(Event.SummarizeClicked) },
-                  trailingIcon = {
-                    Icon(
-                      imageVector = Icons.Filled.Summarize,
-                      contentDescription = stringResource(Res.string.acsb_action_summarize),
-                    )
-                  }
-                )
+            DropdownMenu(
+              expanded = state.topBarPopupShowing,
+              onDismissRequest = { eventSink.invoke(Event.TopBarMenuDismissed) },
+            ) {
+              OpenInBrowserAction {
+                eventSink.invoke(Event.TopBarOpenInBrowser)
+              }
+              SummarizeAction {
+                eventSink.invoke(Event.TopBarSummarize)
+              }
+              ShareAction {
+                eventSink.invoke(Event.TopBarShare)
               }
             }
-          },
-          title = {
-            when (val content = state.article) {
-              is Async.Loading, is Async.Error -> TopAppBarTitleLoading()
-              is Async.Content -> {
-                Column {
-                  Text(
-                    text = content.content.title,
-                    style = MaterialTheme.typography.bodyLarge,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                  )
-                  Text(
-                    text = content.content.link.url,
-                    style = MaterialTheme.typography.bodySmall,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                  )
-                }
-              }
-            }
-          },
-        )
-      },
-    ) { innerPadding ->
-      Box(Modifier.fillMaxSize().padding(innerPadding)) {
-        when (state.article) {
-          is Async.Loading -> {
-            ArticleReaderLoading()
           }
+        },
+        title = {
+          when (val content = state.article) {
+            is Async.Loading, is Async.Error -> TopAppBarTitleLoading()
+            is Async.Content -> {
+              Column {
+                Text(
+                  text = content.content.title,
+                  style = MaterialTheme.typography.bodyLarge,
+                  maxLines = 1,
+                  overflow = TextOverflow.Ellipsis,
+                )
+                Text(
+                  text = content.content.link.url,
+                  style = MaterialTheme.typography.bodySmall,
+                  maxLines = 1,
+                  overflow = TextOverflow.Ellipsis,
+                )
+              }
+            }
+          }
+        },
+      )
+    },
+  ) { innerPadding ->
+    Box(Modifier.fillMaxSize().padding(innerPadding)) {
+      when (state.article) {
+        is Async.Loading -> {
+          ArticleReaderLoading()
+        }
 
-          is Async.Error -> FullscreenErrorState(errorType = ErrorStateKind.UNKNOWN) {
+        is Async.Error -> {
+          FullscreenErrorState {
             eventSink.invoke(Event.ErrorRetryClicked)
           }
+        }
 
-          is Async.Content -> {
-            ArticleContent(
-              article = state.article.content,
-              scrollState = contentScrollState,
-              onPageLoaded = { pageLoaded = true }
-            )
-          }
+        is Async.Content -> {
+          WebView(
+            url = state.article.content.link.url,
+            onPageLoaded = { pageLoaded = true },
+            modifier = modifier.fillMaxSize().verticalScroll(contentScrollState),
+          )
         }
       }
     }
   }
-}
-
-@Composable
-private fun ArticleContent(
-  modifier: Modifier = Modifier,
-  article: Article,
-  scrollState: ScrollState,
-  onPageLoaded: () -> Unit,
-) {
-  WebView(
-    url = article.link.url,
-    onPageLoaded = onPageLoaded,
-    modifier = modifier
-      .fillMaxSize()
-      .verticalScroll(scrollState),
-  )
 }

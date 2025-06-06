@@ -44,7 +44,6 @@ import com.illiarb.catchup.features.home.overlay.showTagFilterOverlay
 import com.illiarb.catchup.service.domain.NewsSource
 import com.illiarb.catchup.summarizer.ui.SummaryScreen
 import com.illiarb.catchup.summarizer.ui.showSummaryOverlay
-import com.illiarb.catchup.uikit.core.components.ErrorStateKind
 import com.illiarb.catchup.uikit.core.components.FullscreenErrorState
 import com.illiarb.catchup.uikit.core.components.HorizontalList
 import com.illiarb.catchup.uikit.core.components.SelectableCircleAvatar
@@ -241,7 +240,7 @@ private fun HomeScreen(state: HomeScreen.State) {
     ) { targetState ->
       when {
         targetState is Async.Error || state.newsSources is Async.Error -> {
-          FullscreenErrorState(Modifier.padding(innerPadding), ErrorStateKind.UNKNOWN) {
+          FullscreenErrorState(Modifier.padding(innerPadding)) {
             eventSink.invoke(Event.ErrorRetryClicked)
           }
         }

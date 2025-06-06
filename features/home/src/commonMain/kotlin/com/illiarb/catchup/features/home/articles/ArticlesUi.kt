@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.illiarb.catchup.service.domain.Article
-import com.illiarb.catchup.uikit.core.components.FullscreenState
+import com.illiarb.catchup.uikit.core.components.EmptyState
 import com.illiarb.catchup.uikit.core.components.LocalLottieAnimation
 import com.illiarb.catchup.uikit.core.components.LottieAnimationType
 import com.illiarb.catchup.uikit.core.components.cell.ArticleCell
@@ -64,7 +64,7 @@ internal fun ArticlesEmpty(
     modifier = modifier.fillMaxSize().padding(contentPadding),
     horizontalAlignment = Alignment.CenterHorizontally,
   ) {
-    FullscreenState(
+    EmptyState(
       title = stringResource(Res.string.home_articles_empty_title),
       buttonText = stringResource(Res.string.home_articles_empty_action),
       onButtonClick = { eventSink.invoke(ArticlesUiEvent.ArticlesRefreshClicked) },

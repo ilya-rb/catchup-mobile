@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.illiarb.catchup.core.arch.OpenUrlScreen
+import com.illiarb.catchup.core.arch.ShareScreen
 import com.illiarb.catchup.core.data.Async
 import com.illiarb.catchup.features.reader.ReaderScreen.Event
 import com.illiarb.catchup.service.CatchupService
@@ -60,20 +61,39 @@ internal class ReaderScreenPresenter(
       topBarPopupShowing = topBarPopupShowing,
       summaryShowing = summaryShowing,
     ) { event ->
+      if (event is Event.TopBarMenuAction) {
+        topBarPopupShowing = false
+      }
+
       when (event) {
-        is Event.NavigationIconClicked -> navigator.pop()
-        is Event.SummarizeClicked -> {
+        is Event.NavigationIconClicked -> {
+          navigator.pop()
+        }
+
+        is Event.TopBarMenuClicked -> {
+          topBarPopupShowing = true
+        }
+
+        is Event.TopBarMenuDismissed -> {
           topBarPopupShowing = false
+        }
+
+        is Event.SummarizeCloseClicked -> {
+          summaryShowing = false
+        }
+
+        is Event.ErrorRetryClicked -> Unit
+
+        is Event.TopBarShare -> {
+          val url = requireNotNull(article.contentOrNull()).link.url
+          navigator.goTo(ShareScreen(url))
+        }
+
+        is Event.TopBarSummarize -> {
           summaryShowing = true
         }
 
-        is Event.TopBarMenuClicked -> topBarPopupShowing = true
-        is Event.TopBarMenuDismissed -> topBarPopupShowing = false
-        is Event.SummarizeCloseClicked -> summaryShowing = false
-        is Event.ErrorRetryClicked -> Unit
-        is Event.OpenInBrowserClicked -> {
-          topBarPopupShowing = false
-
+        is Event.TopBarOpenInBrowser -> {
           val content = article
           require(content is Async.Content)
 
