@@ -56,7 +56,7 @@ internal class MainActivity : ComponentActivity() {
     }
 
     lifecycleScope.launch {
-      activityComponent.messageDispatcher.messages
+      activityComponent.toastMessageDispatcher.messages
         .filterNotNull()
         .collect { showToast(it) }
     }

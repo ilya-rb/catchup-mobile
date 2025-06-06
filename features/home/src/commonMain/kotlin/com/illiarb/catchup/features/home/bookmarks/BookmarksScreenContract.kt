@@ -9,7 +9,6 @@ import com.illiarb.catchup.features.home.articles.ArticlesUiEvent
 import com.illiarb.catchup.service.domain.Article
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.presenter.Presenter
-import com.slack.circuit.runtime.screen.PopResult
 import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuit.runtime.ui.Ui
 import me.tatarka.inject.annotations.IntoSet
@@ -21,6 +20,7 @@ internal object BookmarksScreen : Screen, CommonParcelable {
   @Stable
   data class State(
     val articles: Async<SnapshotStateList<Article>>,
+    val articleSummaryToShow: Article?,
     val articlesEventSink: (ArticlesUiEvent) -> Unit,
     val eventSink: (Event) -> Unit,
   ) : CircuitUiState {
@@ -36,6 +36,7 @@ internal object BookmarksScreen : Screen, CommonParcelable {
   sealed interface Event {
     data object NavigationButtonClicked : Event
     data object ErrorRetryClicked : Event
+    data object SummaryCloseClicked : Event
   }
 }
 

@@ -21,7 +21,7 @@ internal interface UiComponent :
   BookmarksScreenComponent {
 
   val circuit: Circuit
-  val messageDispatcher: ToastMessageDispatcher
+  val toastMessageDispatcher: ToastMessageDispatcher
 
   @ActivityScope
   @Provides

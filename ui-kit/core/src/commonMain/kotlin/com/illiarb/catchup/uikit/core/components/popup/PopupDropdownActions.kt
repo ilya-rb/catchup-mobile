@@ -2,8 +2,8 @@ package com.illiarb.catchup.uikit.core.components.popup
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
+import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.filled.Summarize
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -27,9 +27,9 @@ public fun SummarizeAction(
     modifier = modifier,
     text = { Text(text = stringResource(Res.string.reader_action_summarize)) },
     onClick = onClick,
-    trailingIcon = {
+    leadingIcon = {
       Icon(
-        imageVector = Icons.Filled.Summarize,
+        imageVector = Icons.Filled.Checklist,
         contentDescription = stringResource(Res.string.acsb_action_summarize),
       )
     }
@@ -45,7 +45,7 @@ public fun OpenInBrowserAction(
     modifier = modifier,
     text = { Text(text = stringResource(Res.string.reader_action_open_in_browser)) },
     onClick = onClick,
-    trailingIcon = {
+    leadingIcon = {
       Icon(
         imageVector = Icons.AutoMirrored.Filled.OpenInNew,
         contentDescription = stringResource(Res.string.acsb_action_open_in_browser),
@@ -63,7 +63,7 @@ public fun ShareAction(
     modifier = modifier,
     text = { Text(text = stringResource(Res.string.reader_action_share)) },
     onClick = onClick,
-    trailingIcon = {
+    leadingIcon = {
       Icon(
         imageVector = Icons.Filled.Share,
         contentDescription = stringResource(Res.string.acsb_action_share),

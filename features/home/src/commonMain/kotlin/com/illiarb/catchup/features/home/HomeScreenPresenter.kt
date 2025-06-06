@@ -170,7 +170,9 @@ internal class HomeScreenPresenter(
       },
       articlesEventSink = { event ->
         when (event) {
-          is ArticlesUiEvent.ArticleClicked -> navigator.goTo(ReaderScreen(event.item.id))
+          is ArticlesUiEvent.ArticleClicked -> {
+            navigator.goTo(ReaderScreen(event.item.id))
+          }
 
           is ArticlesUiEvent.ArticleBookmarkClicked -> {
             coroutineScope.launch {
