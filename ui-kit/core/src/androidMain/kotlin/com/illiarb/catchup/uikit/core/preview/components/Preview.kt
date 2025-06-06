@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.illiarb.catchup.uikit.core.theme.UiKitTheme
 
 @Composable
-internal fun PreviewTheme(
+public fun PreviewTheme(
   darkMode: Boolean,
   fullscreen: Boolean = false,
   innerPadding: Boolean = true,

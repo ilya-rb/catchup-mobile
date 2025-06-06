@@ -126,7 +126,7 @@ private fun SummaryScreen(
 }
 
 @Composable
-private fun SummaryLoading() {
+internal fun SummaryLoading() {
   ShimmerColumn(modifier = Modifier.padding(horizontal = 16.dp)) {
     Row(verticalAlignment = Alignment.CenterVertically) {
       Icon(
