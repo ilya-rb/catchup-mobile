@@ -190,10 +190,6 @@ private fun HomeScreen(state: HomeScreen.State) {
             contentKey = { it is Async.Content },
           ) { targetState ->
             when (targetState) {
-              is Async.Loading -> {
-                NewsSourcesLoading(Modifier.padding(start = 16.dp))
-              }
-
               is Async.Content -> {
                 NewsSourcesContent(
                   newsSources = targetState.content,
@@ -205,7 +201,9 @@ private fun HomeScreen(state: HomeScreen.State) {
                 )
               }
 
-              else -> Unit
+              else -> {
+                NewsSourcesLoading(Modifier.padding(start = 16.dp))
+              }
             }
           }
         },
@@ -292,13 +290,15 @@ private fun NewsSourcesContent(
   HorizontalList(
     modifier = modifier,
     items = newsSources,
-    keyProvider = { _, source -> source.kind.key },
+    keyProvider = { index, source -> source.kind.key },
     itemContent = { index, source ->
       SelectableCircleAvatar(
         imageUrl = source.imageUrl.url,
         selected = index == selectedTabIndex,
         fallbackText = source.kind.key.uppercase(),
-        onClick = { onTabClick.invoke(source) }
+        onClick = {
+          onTabClick.invoke(source)
+        }
       )
     },
   )

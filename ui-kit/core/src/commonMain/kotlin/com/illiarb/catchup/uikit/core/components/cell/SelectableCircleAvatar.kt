@@ -23,10 +23,8 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.illiarb.catchup.uikit.core.painter.TextWithBackgroundPainter
 import com.illiarb.catchup.uikit.imageloader.UrlImage
 
 @Composable
@@ -56,17 +54,10 @@ public fun SelectableCircleAvatar(
       repeatMode = RepeatMode.Restart,
     ),
   )
-  val textMeasurer = rememberTextMeasurer()
 
   UrlImage(
     url = imageUrl,
     contentScale = ContentScale.Inside,
-    error = TextWithBackgroundPainter(
-      textMeasurer = textMeasurer,
-      textStyle = MaterialTheme.typography.labelMedium,
-      text = fallbackText.take(n = 2),
-      backgroundColor = MaterialTheme.colorScheme.surfaceBright,
-    ),
     modifier = modifier
       .size(48.dp)
       .padding(borderWidth)
