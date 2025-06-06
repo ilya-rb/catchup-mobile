@@ -20,11 +20,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.illiarb.catchup.service.domain.Article
-import com.illiarb.catchup.uikit.core.components.cell.EmptyState
 import com.illiarb.catchup.uikit.core.components.LocalLottieAnimation
 import com.illiarb.catchup.uikit.core.components.LottieAnimationType
 import com.illiarb.catchup.uikit.core.components.cell.ArticleCell
 import com.illiarb.catchup.uikit.core.components.cell.ArticleLoadingCell
+import com.illiarb.catchup.uikit.core.components.cell.EmptyState
 import com.illiarb.catchup.uikit.resources.Res
 import com.illiarb.catchup.uikit.resources.home_articles_empty_action
 import com.illiarb.catchup.uikit.resources.home_articles_empty_title

@@ -11,7 +11,8 @@ public interface SummaryScreenComponent {
 
   @Provides
   @IntoSet
-  public fun bindSummaryScreenPresenterFactory(factory: SummaryPresenterFactory): Presenter.Factory = factory
+  public fun bindSummaryScreenPresenterFactory(factory: SummaryPresenterFactory): Presenter.Factory =
+    factory
 
   @Provides
   @IntoSet

@@ -2,11 +2,11 @@ package com.illiarb.catchup.uikit.core.preview.components.cell
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import androidx.compose.runtime.Composable
 import com.illiarb.catchup.uikit.core.components.cell.RowCell
 import com.illiarb.catchup.uikit.core.preview.components.PreviewTheme
 

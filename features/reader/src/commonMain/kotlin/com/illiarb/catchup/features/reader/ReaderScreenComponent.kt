@@ -9,7 +9,8 @@ public interface ReaderScreenComponent {
 
   @Provides
   @IntoSet
-  public fun provideReaderScreenPresenterFactory(factory: ReaderScreenPresenterFactory): Presenter.Factory = factory
+  public fun provideReaderScreenPresenterFactory(factory: ReaderScreenPresenterFactory): Presenter.Factory =
+    factory
 
   @Provides
   @IntoSet

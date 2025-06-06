@@ -5,4 +5,5 @@ import com.slack.circuitx.android.AndroidScreen
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-public actual data class OpenUrlScreen actual constructor(actual val url: String) : Screen, AndroidScreen
+public actual data class OpenUrlScreen actual constructor(actual val url: String) : Screen,
+  AndroidScreen

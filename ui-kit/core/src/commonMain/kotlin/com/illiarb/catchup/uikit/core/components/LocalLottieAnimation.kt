@@ -15,7 +15,6 @@ import io.github.alexzhirkevich.compottie.animateLottieCompositionAsState
 import io.github.alexzhirkevich.compottie.rememberLottieComposition
 import io.github.alexzhirkevich.compottie.rememberLottiePainter
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 @Composable
 public fun LocalLottieAnimation(

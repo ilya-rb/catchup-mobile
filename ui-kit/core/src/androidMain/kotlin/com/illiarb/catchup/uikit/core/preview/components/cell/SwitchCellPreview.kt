@@ -7,8 +7,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.illiarb.catchup.uikit.core.components.cell.SwitchCell
-import com.illiarb.catchup.uikit.core.preview.components.PreviewTheme
 import com.illiarb.catchup.uikit.core.model.VectorIcon
+import com.illiarb.catchup.uikit.core.preview.components.PreviewTheme
 
 @Composable
 @Preview

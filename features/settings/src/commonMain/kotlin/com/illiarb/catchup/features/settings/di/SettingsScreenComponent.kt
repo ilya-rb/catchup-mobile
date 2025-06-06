@@ -11,7 +11,8 @@ public interface SettingsScreenComponent {
 
   @Provides
   @IntoSet
-  public fun provideSettingsScreenPresenterFactory(factory: SettingsScreenPresenterFactory): Presenter.Factory = factory
+  public fun provideSettingsScreenPresenterFactory(factory: SettingsScreenPresenterFactory): Presenter.Factory =
+    factory
 
   @Provides
   @IntoSet
