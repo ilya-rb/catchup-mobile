@@ -1,4 +1,4 @@
-package com.illiarb.catchup.uikit.core.components.preview
+package com.illiarb.catchup.uikit.core.preview.components.cell
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -8,6 +8,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.runtime.Composable
 import com.illiarb.catchup.uikit.core.components.cell.RowCell
+import com.illiarb.catchup.uikit.core.preview.components.PreviewTheme
 
 internal data class RowCellPreviewData(
   val text: String,

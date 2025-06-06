@@ -1,8 +1,9 @@
-package com.illiarb.catchup.uikit.core.components.preview
+package com.illiarb.catchup.uikit.core.preview.components.cell
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.illiarb.catchup.uikit.core.components.SelectableCircleAvatarLoading
+import com.illiarb.catchup.uikit.core.components.cell.SelectableCircleAvatarLoading
+import com.illiarb.catchup.uikit.core.preview.components.PreviewTheme
 
 @Composable
 @Preview

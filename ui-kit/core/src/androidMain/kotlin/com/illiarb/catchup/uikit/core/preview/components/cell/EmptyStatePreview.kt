@@ -1,5 +1,6 @@
-package com.illiarb.catchup.uikit.core.components.preview
+package com.illiarb.catchup.uikit.core.preview.components.cell
 
+import android.R
 import androidx.compose.foundation.Image
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -8,30 +9,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.illiarb.catchup.uikit.core.components.EmptyState
-
-internal data class FullscreenStateData(
-  val title: String,
-  val buttonText: String?,
-  val hasButton: Boolean
-)
-
-internal class FullscreenStatePreviewProvider : PreviewParameterProvider<FullscreenStateData> {
-  override val values = sequenceOf(
-    FullscreenStateData("Nothing to See Here", "Try Again", true),
-    FullscreenStateData("Welcome!", null, false),
-    FullscreenStateData("You are Offline, 2 line text, 2 line text", "Refresh", true),
-  )
-}
+import com.illiarb.catchup.uikit.core.components.cell.EmptyState
+import com.illiarb.catchup.uikit.core.preview.components.PreviewTheme
 
 @Preview(
   name = "Light Mode - Parameterized",
-  group = "FullscreenStateParameterized"
+  group = "EmptyStateParameterized"
 )
 @Composable
 internal fun FullscreenStatePreviewParameterizedLight(
-  @PreviewParameter(FullscreenStatePreviewProvider::class)
-  data: FullscreenStateData
+  @PreviewParameter(EmptyStatePreviewProvider::class)
+  data: EmptyStateData
 ) {
   PreviewTheme(darkMode = false) {
     EmptyState(
@@ -40,7 +28,7 @@ internal fun FullscreenStatePreviewParameterizedLight(
       onButtonClick = { },
       image = { modifier ->
         Image(
-          painter = painterResource(id = android.R.drawable.ic_dialog_dialer),
+          painter = painterResource(id = R.drawable.ic_dialog_dialer),
           contentDescription = "Icon",
           modifier = modifier,
           colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.tertiary)
@@ -52,12 +40,12 @@ internal fun FullscreenStatePreviewParameterizedLight(
 
 @Preview(
   name = "Dark Mode - Parameterized",
-  group = "FullscreenStateParameterized",
+  group = "EmptyStateParameterized",
 )
 @Composable
 internal fun FullscreenStatePreviewParameterizedDark(
-  @PreviewParameter(FullscreenStatePreviewProvider::class)
-  data: FullscreenStateData
+  @PreviewParameter(EmptyStatePreviewProvider::class)
+  data: EmptyStateData
 ) {
   PreviewTheme(darkMode = true) {
     EmptyState(
@@ -66,7 +54,7 @@ internal fun FullscreenStatePreviewParameterizedDark(
       onButtonClick = { },
       image = { modifier ->
         Image(
-          painter = painterResource(id = android.R.drawable.ic_dialog_dialer),
+          painter = painterResource(id = R.drawable.ic_dialog_dialer),
           contentDescription = "Icon",
           modifier = modifier,
           colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.tertiary)
@@ -74,4 +62,18 @@ internal fun FullscreenStatePreviewParameterizedDark(
       }
     )
   }
+}
+
+internal data class EmptyStateData(
+  val title: String,
+  val buttonText: String?,
+  val hasButton: Boolean
+)
+
+internal class EmptyStatePreviewProvider : PreviewParameterProvider<EmptyStateData> {
+  override val values = sequenceOf(
+    EmptyStateData("Nothing to See Here", "Try Again", true),
+    EmptyStateData("Welcome!", null, false),
+    EmptyStateData("You are Offline, 2 line text, 2 line text", "Refresh", true),
+  )
 }

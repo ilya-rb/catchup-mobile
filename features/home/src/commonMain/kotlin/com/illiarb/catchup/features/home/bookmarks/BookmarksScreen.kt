@@ -33,15 +33,14 @@ import com.illiarb.catchup.features.home.articles.ArticlesUiEvent
 import com.illiarb.catchup.features.home.bookmarks.BookmarksScreen.Event
 import com.illiarb.catchup.summarizer.ui.SummaryScreen
 import com.illiarb.catchup.summarizer.ui.showSummaryOverlay
-import com.illiarb.catchup.uikit.core.components.EmptyState
-import com.illiarb.catchup.uikit.core.components.FullscreenErrorState
+import com.illiarb.catchup.uikit.core.components.cell.EmptyState
+import com.illiarb.catchup.uikit.core.components.cell.FullscreenErrorState
 import com.illiarb.catchup.uikit.core.components.LocalLottieAnimation
 import com.illiarb.catchup.uikit.core.components.LottieAnimationType
 import com.illiarb.catchup.uikit.resources.Res
 import com.illiarb.catchup.uikit.resources.acsb_navigation_back
+import com.illiarb.catchup.uikit.resources.bookmarks_empty
 import com.illiarb.catchup.uikit.resources.bookmarks_screen_title
-import com.illiarb.catchup.uikit.resources.home_articles_empty_action
-import com.illiarb.catchup.uikit.resources.home_articles_empty_title
 import com.slack.circuit.overlay.OverlayEffect
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.screen.Screen
@@ -145,9 +144,8 @@ private fun BookmarksEmpty(
     horizontalAlignment = Alignment.CenterHorizontally,
   ) {
     EmptyState(
-      title = stringResource(Res.string.home_articles_empty_title),
-      buttonText = stringResource(Res.string.home_articles_empty_action),
-      onButtonClick = onActionClick,
+      title = stringResource(Res.string.bookmarks_empty),
+      buttonText = null,
       modifier = Modifier
         .fillMaxWidth()
         .padding(16.dp)

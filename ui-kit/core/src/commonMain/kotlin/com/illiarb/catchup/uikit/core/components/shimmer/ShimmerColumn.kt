@@ -1,4 +1,4 @@
-package com.illiarb.catchup.uikit.core.components
+package com.illiarb.catchup.uikit.core.components.shimmer
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope

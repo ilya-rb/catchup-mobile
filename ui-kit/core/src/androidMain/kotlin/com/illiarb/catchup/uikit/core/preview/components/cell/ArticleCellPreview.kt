@@ -1,16 +1,15 @@
-package com.illiarb.catchup.uikit.core.components.preview
+package com.illiarb.catchup.uikit.core.preview.components.cell
 
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.illiarb.catchup.uikit.core.components.cell.ArticleCell
-import com.illiarb.catchup.uikit.core.components.cell.ArticleLoadingCell
-import com.illiarb.catchup.uikit.core.theme.UiKitTheme
+import com.illiarb.catchup.uikit.core.preview.components.PreviewTheme
 
 @Composable
 internal fun ArticleCellPreview(darkTheme: Boolean) {
-  UiKitTheme(useDynamicColors = false, useDarkTheme = darkTheme) {
+  PreviewTheme(darkTheme) {
     LazyColumn {
       items(
         count = 3,

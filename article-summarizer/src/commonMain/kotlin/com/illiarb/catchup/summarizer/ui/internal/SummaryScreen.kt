@@ -1,13 +1,11 @@
 package com.illiarb.catchup.summarizer.ui.internal
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Assistant
 import androidx.compose.material.icons.filled.Close
@@ -24,13 +22,12 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.illiarb.catchup.core.data.Async
 import com.illiarb.catchup.summarizer.ui.SummaryScreen
 import com.illiarb.catchup.summarizer.ui.SummaryScreen.Event
-import com.illiarb.catchup.uikit.core.components.ShimmerColumn
+import com.illiarb.catchup.uikit.core.components.shimmer.ShimmerBox
+import com.illiarb.catchup.uikit.core.components.shimmer.ShimmerColumn
 import com.illiarb.catchup.uikit.resources.Res
 import com.illiarb.catchup.uikit.resources.acsb_action_close
 import com.illiarb.catchup.uikit.resources.acsb_action_open_in_browser
@@ -142,20 +139,14 @@ private fun SummaryLoading() {
         style = MaterialTheme.typography.bodyLarge,
       )
     }
-    Box(
-      content = {},
+    ShimmerBox(
       modifier = Modifier
         .padding(top = 16.dp)
-        .clip(RoundedCornerShape(16.dp))
-        .background(Color.LightGray)
         .size(width = 250.dp, height = 16.dp),
     )
-    Box(
-      content = {},
+    ShimmerBox(
       modifier = Modifier
         .padding(top = 8.dp)
-        .clip(RoundedCornerShape(16.dp))
-        .background(Color.LightGray)
         .size(width = 150.dp, height = 16.dp),
     )
   }

@@ -39,8 +39,8 @@ import com.illiarb.catchup.core.data.Async
 import com.illiarb.catchup.features.reader.ReaderScreen.Event
 import com.illiarb.catchup.summarizer.ui.SummaryScreen
 import com.illiarb.catchup.summarizer.ui.showSummaryOverlay
-import com.illiarb.catchup.uikit.core.components.ArticleReaderLoading
-import com.illiarb.catchup.uikit.core.components.FullscreenErrorState
+import com.illiarb.catchup.uikit.core.components.cell.ArticleReaderLoading
+import com.illiarb.catchup.uikit.core.components.cell.FullscreenErrorState
 import com.illiarb.catchup.uikit.core.components.TopAppBarTitleLoading
 import com.illiarb.catchup.uikit.core.components.WebView
 import com.illiarb.catchup.uikit.core.components.popup.OpenInBrowserAction

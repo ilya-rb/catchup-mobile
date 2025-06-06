@@ -1,4 +1,4 @@
-package com.illiarb.catchup.uikit.core.components
+package com.illiarb.catchup.uikit.core.components.cell
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,7 +20,7 @@ public fun EmptyState(
   title: String,
   buttonText: String?,
   buttonColors: ButtonColors = ButtonDefaults.buttonColors(),
-  onButtonClick: () -> Unit,
+  onButtonClick: () -> Unit = {},
   image: @Composable (Modifier) -> Unit,
 ) {
   Column(
@@ -32,7 +32,10 @@ public fun EmptyState(
 
     Text(
       text = title,
-      modifier = Modifier.padding(),
+      modifier = Modifier.padding(
+        top = 24.dp,
+        bottom = if (buttonText == null) 24.dp else 0.dp
+      ),
       style = MaterialTheme.typography.titleLarge,
       color = MaterialTheme.colorScheme.onSurface,
       textAlign = TextAlign.Center,
@@ -41,7 +44,7 @@ public fun EmptyState(
 
     if (buttonText != null) {
       Button(
-        modifier = Modifier.padding(top = 20.dp, bottom = 16.dp),
+        modifier = Modifier.padding(top = 24.dp, bottom = 24.dp),
         onClick = onButtonClick,
         colors = buttonColors,
       ) {

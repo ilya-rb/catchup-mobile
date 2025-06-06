@@ -1,4 +1,4 @@
-package com.illiarb.catchup.uikit.core.components
+package com.illiarb.catchup.uikit.core.components.cell
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -14,6 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.illiarb.catchup.uikit.core.components.LocalLottieAnimation
+import com.illiarb.catchup.uikit.core.components.LottieAnimationType
 import com.illiarb.catchup.uikit.resources.Res
 import com.illiarb.catchup.uikit.resources.common_error_default_action
 import com.illiarb.catchup.uikit.resources.common_error_default_title

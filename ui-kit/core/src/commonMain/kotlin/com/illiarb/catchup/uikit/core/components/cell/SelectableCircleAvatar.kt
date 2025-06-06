@@ -1,4 +1,4 @@
-package com.illiarb.catchup.uikit.core.components
+package com.illiarb.catchup.uikit.core.components.cell
 
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat

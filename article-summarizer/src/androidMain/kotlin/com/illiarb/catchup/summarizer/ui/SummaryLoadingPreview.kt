@@ -2,7 +2,6 @@ package com.illiarb.catchup.summarizer.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -18,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.illiarb.catchup.uikit.core.components.ShimmerColumn
+import com.illiarb.catchup.uikit.core.components.shimmer.ShimmerColumn
 import com.illiarb.catchup.uikit.core.theme.UiKitTheme
 
 @Composable

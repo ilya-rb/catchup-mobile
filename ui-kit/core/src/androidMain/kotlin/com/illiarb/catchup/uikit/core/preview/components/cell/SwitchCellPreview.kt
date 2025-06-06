@@ -1,4 +1,4 @@
-package com.illiarb.catchup.uikit.core.components.preview
+package com.illiarb.catchup.uikit.core.preview.components.cell
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -7,35 +7,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.illiarb.catchup.uikit.core.components.cell.SwitchCell
+import com.illiarb.catchup.uikit.core.preview.components.PreviewTheme
 import com.illiarb.catchup.uikit.core.model.VectorIcon
-
-internal data class SwitchCellPreviewData(
-  val text: String,
-  val subtitle: String?,
-  val startIcon: VectorIcon?,
-  val checked: Boolean
-)
-
-internal class SwitchCellPreviewProvider : PreviewParameterProvider<SwitchCellPreviewData> {
-
-  override val values = sequenceOf(
-    SwitchCellPreviewData(
-      text = "Switch title",
-      subtitle = "Switch subtitle",
-      startIcon = VectorIcon(
-        imageVector = Icons.Filled.Check,
-        contentDescription = "Check icon",
-      ),
-      checked = true,
-    ),
-    SwitchCellPreviewData(
-      text = "Switch without icon",
-      subtitle = null,
-      startIcon = null,
-      checked = false,
-    ),
-  )
-}
 
 @Composable
 @Preview
@@ -69,4 +42,32 @@ internal fun SwitchCellPreviewDark(
       onChecked = {}
     )
   }
+}
+
+internal data class SwitchCellPreviewData(
+  val text: String,
+  val subtitle: String?,
+  val startIcon: VectorIcon?,
+  val checked: Boolean
+)
+
+internal class SwitchCellPreviewProvider : PreviewParameterProvider<SwitchCellPreviewData> {
+
+  override val values = sequenceOf(
+    SwitchCellPreviewData(
+      text = "Switch title",
+      subtitle = "Switch subtitle",
+      startIcon = VectorIcon(
+        imageVector = Icons.Filled.Check,
+        contentDescription = "Check icon",
+      ),
+      checked = true,
+    ),
+    SwitchCellPreviewData(
+      text = "Switch without icon",
+      subtitle = null,
+      startIcon = null,
+      checked = false,
+    ),
+  )
 }

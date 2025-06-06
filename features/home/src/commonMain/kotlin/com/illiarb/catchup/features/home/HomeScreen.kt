@@ -44,10 +44,10 @@ import com.illiarb.catchup.features.home.overlay.showTagFilterOverlay
 import com.illiarb.catchup.service.domain.NewsSource
 import com.illiarb.catchup.summarizer.ui.SummaryScreen
 import com.illiarb.catchup.summarizer.ui.showSummaryOverlay
-import com.illiarb.catchup.uikit.core.components.FullscreenErrorState
+import com.illiarb.catchup.uikit.core.components.cell.FullscreenErrorState
 import com.illiarb.catchup.uikit.core.components.HorizontalList
-import com.illiarb.catchup.uikit.core.components.SelectableCircleAvatar
-import com.illiarb.catchup.uikit.core.components.SelectableCircleAvatarLoading
+import com.illiarb.catchup.uikit.core.components.cell.SelectableCircleAvatar
+import com.illiarb.catchup.uikit.core.components.cell.SelectableCircleAvatarLoading
 import com.illiarb.catchup.uikit.core.components.TextSwitcher
 import com.illiarb.catchup.uikit.resources.Res
 import com.illiarb.catchup.uikit.resources.acsb_action_bookmarks
@@ -57,7 +57,6 @@ import com.illiarb.catchup.uikit.resources.home_screen_title
 import com.illiarb.catchup.uikit.resources.service_dou_name
 import com.illiarb.catchup.uikit.resources.service_hacker_news_name
 import com.illiarb.catchup.uikit.resources.service_irish_times_name
-import com.slack.circuit.foundation.CircuitContent
 import com.slack.circuit.overlay.OverlayEffect
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.screen.Screen
