@@ -10,7 +10,6 @@ import androidx.compose.ui.graphics.Color
 internal expect fun colorScheme(useDarkTheme: Boolean, useDynamicColors: Boolean): ColorScheme
 
 /**
- * Generated with
  * https://material-foundation.github.io/material-theme-builder/
  */
 internal object UiKitColor {

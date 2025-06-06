@@ -1,6 +1,7 @@
 package com.illiarb.catchup.uikit.core.components.cell
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -11,14 +12,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.illiarb.catchup.uikit.core.components.shimmer.ShimmerBox
-import com.illiarb.catchup.uikit.core.components.shimmer.ShimmerColumn
+import com.valentinilk.shimmer.shimmer
 
 @Composable
 public fun ArticleReaderLoading() {
-  ShimmerColumn(
+  Column(
     modifier = Modifier
       .fillMaxSize()
       .background(MaterialTheme.colorScheme.surfaceContainer)
+      .shimmer()
   ) {
     ShimmerBox(
       modifier = Modifier
