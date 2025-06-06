@@ -42,9 +42,8 @@ public interface CatchupServiceComponent : SqlDatabasePlatformComponent {
     articleEntityAdapter = ArticleEntity.Adapter(
       tagsAdapter = DatabaseAdapters.tagsAdapter,
       sourceAdapter = DatabaseAdapters.sourceAdapter,
-      createdAtAdapter = DatabaseAdapters.instantAdapter,
+      dateAdapter = DatabaseAdapters.instantAdapter,
       linkAdapter = DatabaseAdapters.urlAdapter,
-      estimatedReadingTimeSecondsAdapter = DatabaseAdapters.durationAdapter,
     ),
     newsSourceEntityAdapter = NewsSourceEntity.Adapter(
       kindAdapter = DatabaseAdapters.sourceAdapter,

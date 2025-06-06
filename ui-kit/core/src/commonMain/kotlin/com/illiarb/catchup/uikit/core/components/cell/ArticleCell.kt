@@ -32,20 +32,19 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.illiarb.catchup.uikit.core.components.popup.ShareAction
 import com.illiarb.catchup.uikit.core.components.popup.SummarizeAction
-import com.illiarb.catchup.uikit.core.text.AuthorText
 import kotlinx.coroutines.launch
 
 @Composable
 public fun ArticleCell(
   modifier: Modifier = Modifier,
   title: String,
-  caption: String,
+  subtitle: String,
   saved: Boolean,
   onClick: () -> Unit,
   onBookmarkClick: () -> Unit,
   onSummarizeClick: () -> Unit,
   onShareClick: () -> Unit,
-  author: String? = null,
+  caption: String? = null,
 ) {
   var moreMenuExpanded by remember { mutableStateOf(false) }
 
@@ -57,12 +56,12 @@ public fun ArticleCell(
     modifier = modifier.clickable(onClick = onClick),
   ) {
     Column(modifier = Modifier.weight(1f)) {
-      val hasCaption = caption.isNotEmpty()
+      val hasSubtitle = subtitle.isNotEmpty()
       val paddingVertical = 12.dp
 
-      if (hasCaption) {
+      if (hasSubtitle) {
         Text(
-          text = caption.uppercase(),
+          text = subtitle.uppercase(),
           style = MaterialTheme.typography.bodyLarge,
           color = MaterialTheme.colorScheme.primary,
           modifier = Modifier
@@ -80,16 +79,16 @@ public fun ArticleCell(
         modifier = Modifier.fillMaxWidth().padding(
           start = 16.dp,
           end = 16.dp,
-          top = if (hasCaption) 0.dp else paddingVertical,
-          bottom = if (author == null) paddingVertical else 0.dp,
+          top = if (hasSubtitle) 0.dp else paddingVertical,
+          bottom = if (caption == null) paddingVertical else 0.dp,
         ),
       )
 
       Row(verticalAlignment = Alignment.CenterVertically) {
-        if (author != null) {
-          AuthorText(
+        if (caption != null) {
+          Text(
             modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = paddingVertical),
-            author = author,
+            text = caption,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
           )

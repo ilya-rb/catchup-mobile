@@ -17,8 +17,8 @@ internal fun ArticleCellPreview(darkTheme: Boolean) {
         itemContent = {
           ArticleCell(
             title = "Title Title Title Title Title Title ".repeat(2),
-            caption = "Caption",
-            author = "Author",
+            subtitle = "Caption",
+            caption = "12 Nov 2025",
             saved = false,
             onClick = {},
             onBookmarkClick = {},

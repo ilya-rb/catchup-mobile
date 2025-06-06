@@ -6,10 +6,8 @@ import com.illiarb.catchup.core.logging.Logger
 import com.illiarb.catchup.service.ArticleEntity
 import com.illiarb.catchup.service.Database
 import com.illiarb.catchup.service.domain.Article
-import com.illiarb.catchup.service.domain.ArticleContent
 import com.illiarb.catchup.service.domain.NewsSource
 import kotlinx.coroutines.withContext
-import kotlinx.datetime.Clock
 import me.tatarka.inject.annotations.Inject
 
 @Inject
@@ -43,7 +41,6 @@ public class ArticlesDao(
           saved = if (article.saved) 1L else 0L,
           id = article.id,
         )
-        Unit
       }
     }.onFailure { error ->
       Logger.e(TAG, error)
@@ -82,14 +79,10 @@ public class ArticlesDao(
     db.articlesQueries.insert(
       id = article.id,
       title = article.title,
-      shortSummary = article.shortSummary,
       link = article.link,
       tags = article.tags,
       source = article.source,
-      createdAt = Clock.System.now(),
-      authorName = article.authorName,
-      content = article.content?.text,
-      estimatedReadingTimeSeconds = article.content?.estimatedReadingTime,
+      date = article.date,
       saved = if (article.saved) 1L else 0L,
     )
   }
@@ -98,18 +91,11 @@ public class ArticlesDao(
     return Article(
       id = id,
       title = title,
-      shortSummary = shortSummary,
       link = link,
       tags = tags.orEmpty(),
       source = source,
-      authorName = authorName,
-      content = content?.let {
-        ArticleContent(
-          text = it,
-          estimatedReadingTime = requireNotNull(estimatedReadingTimeSeconds)
-        )
-      },
       saved = saved == 1L,
+      date = date,
     )
   }
 

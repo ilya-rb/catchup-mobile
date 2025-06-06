@@ -24,6 +24,7 @@ kotlin {
       implementation(libs.circuit.core)
       implementation(libs.circuit.overlay)
 
+      implementation(libs.kotlinx.datetime)
       implementation(libs.kotlin.inject.runtime)
       implementation(libs.haze)
       implementation(libs.haze.materials)

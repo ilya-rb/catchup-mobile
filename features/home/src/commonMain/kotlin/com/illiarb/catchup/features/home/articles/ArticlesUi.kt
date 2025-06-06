@@ -28,6 +28,12 @@ import com.illiarb.catchup.uikit.core.components.cell.EmptyState
 import com.illiarb.catchup.uikit.resources.Res
 import com.illiarb.catchup.uikit.resources.home_articles_empty_action
 import com.illiarb.catchup.uikit.resources.home_articles_empty_title
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format
+import kotlinx.datetime.format.char
+import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.stringResource
 
 internal sealed interface ArticlesUiEvent {
@@ -97,8 +103,8 @@ internal fun ArticlesContent(
         ArticleCell(
           modifier = Modifier.animateItem(),
           title = article.title,
-          author = article.authorName,
-          caption = article.tags.firstOrNull()?.value.orEmpty(),
+          caption = article.date.formatted(),
+          subtitle = article.tags.firstOrNull()?.value.orEmpty(),
           saved = article.saved,
           onClick = {
             eventSink.invoke(ArticlesUiEvent.ArticleClicked(article))
@@ -119,4 +125,14 @@ internal fun ArticlesContent(
       }
     )
   }
+}
+
+private fun Instant.formatted(): String {
+  val date = this.toLocalDateTime(TimeZone.UTC)
+  val format = LocalDateTime.Format {
+    dayOfMonth()
+    char(' ')
+    year()
+  }
+  return date.format(format)
 }

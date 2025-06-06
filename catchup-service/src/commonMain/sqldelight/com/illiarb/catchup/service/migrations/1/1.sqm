@@ -1,1 +1,0 @@
-ALTER TABLE `articleEntity` ADD COLUMN `saved` INTEGER NOT NULL DEFAULT 0;
