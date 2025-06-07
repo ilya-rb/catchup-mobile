@@ -25,14 +25,12 @@ import com.illiarb.catchup.uikit.core.components.LottieAnimationType
 import com.illiarb.catchup.uikit.core.components.cell.ArticleCell
 import com.illiarb.catchup.uikit.core.components.cell.ArticleLoadingCell
 import com.illiarb.catchup.uikit.core.components.cell.EmptyState
+import com.illiarb.catchup.uikit.core.components.text.DateFormats
 import com.illiarb.catchup.uikit.resources.Res
 import com.illiarb.catchup.uikit.resources.home_articles_empty_action
 import com.illiarb.catchup.uikit.resources.home_articles_empty_title
-import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
-import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.stringResource
 
@@ -103,7 +101,7 @@ internal fun ArticlesContent(
         ArticleCell(
           modifier = Modifier.animateItem(),
           title = article.title,
-          caption = article.date.formatted(),
+          caption = article.date.toLocalDateTime(TimeZone.UTC).format(DateFormats.default),
           subtitle = article.tags.firstOrNull()?.value.orEmpty(),
           saved = article.saved,
           onClick = {
@@ -125,14 +123,4 @@ internal fun ArticlesContent(
       }
     )
   }
-}
-
-private fun Instant.formatted(): String {
-  val date = this.toLocalDateTime(TimeZone.UTC)
-  val format = LocalDateTime.Format {
-    dayOfMonth()
-    char(' ')
-    year()
-  }
-  return date.format(format)
 }

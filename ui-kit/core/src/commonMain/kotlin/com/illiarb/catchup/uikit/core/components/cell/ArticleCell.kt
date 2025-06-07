@@ -79,7 +79,7 @@ public fun ArticleCell(
         modifier = Modifier.fillMaxWidth().padding(
           start = 16.dp,
           end = 16.dp,
-          top = if (hasSubtitle) 0.dp else paddingVertical,
+          top = if (hasSubtitle) 8.dp else paddingVertical,
           bottom = if (caption == null) paddingVertical else 0.dp,
         ),
       )
@@ -87,7 +87,12 @@ public fun ArticleCell(
       Row(verticalAlignment = Alignment.CenterVertically) {
         if (caption != null) {
           Text(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = paddingVertical),
+            modifier = Modifier.padding(
+              start = 16.dp,
+              end = 16.dp,
+              top = 8.dp,
+              bottom = paddingVertical,
+            ),
             text = caption,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
